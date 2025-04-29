@@ -1,4 +1,4 @@
-import 'package:agenda/widget/recapitulatifEvenement.dart';
+import 'package:agenda/widget/recapitulatif_evenement.dart';
 import 'package:flutter/material.dart';
 
 class ListeEvenement extends StatelessWidget {
