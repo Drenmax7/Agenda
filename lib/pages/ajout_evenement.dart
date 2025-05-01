@@ -1,3 +1,4 @@
+import 'package:agenda/widget/snackbar.dart';
 import 'package:flutter/material.dart';
 
 import '../io_evenement.dart';
@@ -27,6 +28,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
         children: [
           evenement(),
           anniversaire(),
+          parametre(),
         ],
       )
     );
@@ -35,7 +37,8 @@ class _AjoutEvenement extends State<AjoutEvenement> {
   AppBar onglets(){
     List<String> nomOnglet = [
       "Evénements",
-      "Anniversaire"
+      "Anniversaire",
+      "⚙️"
     ];
 
     Map<int, FlexColumnWidth> columnWidth = {};
@@ -46,12 +49,12 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     return AppBar(
       backgroundColor: Colors.deepPurple,
       title: Table(
-        //columnWidths: columnWidth,
+        columnWidths: columnWidth,
         children: [
           TableRow(
             children: List.generate(
                 nomOnglet.length,
-                    (index) {
+                (index) {
                   Color color = Colors.grey.shade300;
                   if (pageActuelle == index) {
                     color = Colors.yellow;
@@ -65,7 +68,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                     },
                     child: Container(
                       height: 80,
-                      color: Colors.transparent,
+                      color: pageActuelle == index ? Colors.deepPurple[700] : Colors.transparent,
                       child: Center(
                         child: Text(
                           nomOnglet[index],
@@ -145,6 +148,87 @@ class _AjoutEvenement extends State<AjoutEvenement> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget parametre() {
+    return Scaffold(
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Import/Export',
+              style: TextStyle(
+                  fontSize: 24
+              ),),
+          ),
+          Expanded(
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      IOEvenement.import().then((resultat) {
+                        if (resultat) {
+                          showSnackbar(context, "🟢 Import réussie");
+                        } else {
+                          showSnackbar(context, "🔴 Erreur lors de l'import");
+                        }
+                      });
+                    },
+                    icon: Icon(Icons.file_download),
+                    label: Text(
+                      'Import',
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.greenAccent.shade700,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 8,
+                    ),
+                  ),
+                  SizedBox(width: 50,),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      IOEvenement.export().then((resultat) {
+                        if (resultat) {
+                          showSnackbar(context, "🟢 Export réussie");
+                        } else {
+                          showSnackbar(context, "🔴 Erreur lors de l'export");
+                        }
+                      });
+                    },
+                    icon: Icon(Icons.file_upload),
+                    label: Text(
+                      'Export',
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent.shade700,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 8,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

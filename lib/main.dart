@@ -95,10 +95,11 @@ class _Agenda extends State<Agenda> {
             children: List.generate(
                 nomOnglet.length,
                     (index) {
-                  Color color = Colors.grey.shade300;
+                  Color textColor = Colors.grey.shade300;
                   if (pageActuelle == index) {
-                    color = Colors.yellow;
+                    textColor = Colors.yellow;
                   }
+
                   return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -108,12 +109,12 @@ class _Agenda extends State<Agenda> {
                     },
                     child: Container(
                       height: 80,
-                      color: Colors.transparent,
+                      color: pageActuelle == index ? Colors.deepPurple[700] : Colors.transparent,
                       child: Center(
                         child: Text(
                           nomOnglet[index],
                           style: TextStyle(
-                            color: color,
+                            color: textColor,
                             fontSize: 16,
                           ),
                         ),

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 
+import 'package:permission_handler/permission_handler.dart';
+
 class IOEvenement{
   static late Map<String, dynamic> evenement;
   static late Map<String, dynamic> anniversaire;
@@ -79,6 +81,53 @@ class IOEvenement{
       contenu = "{}";
     }
     agenda = jsonDecode(contenu);
+  }
+
+  static Future<File?> getExportFile() async{
+    bool permissionAccorde = await Permission.manageExternalStorage.request().isGranted;
+    if (!permissionAccorde){
+      openAppSettings();
+      return null;
+    }
+
+    final Directory? directory = await getDownloadsDirectory();
+    final File file = File('${directory!.path}/evenementAgenda.json');
+
+    return file;
+  }
+
+  static Future<bool> export() async {
+    File? file = await getExportFile();
+    if (file == null){
+      return false;
+    }
+
+    Map<String, dynamic> dataAgenda = {
+      "anniversaire" : anniversaire,
+      "evenement" : evenement,
+      "agenda" : agenda,
+    };
+
+    String jsonString = jsonEncode(dataAgenda);
+    await file.writeAsString(jsonString, mode: FileMode.write);
+
+    return true;
+  }
+
+  static Future<bool> import() async {
+    File? file = await getExportFile();
+    if (file == null){
+      return false;
+    }
+
+    String contenu = await file.readAsString();
+    Map<String, dynamic> dataAgenda = jsonDecode(contenu);
+
+    anniversaire = dataAgenda["anniversaire"];
+    evenement = dataAgenda["evenement"];
+    agenda = dataAgenda["agenda"];
+
+    return true;
   }
 
   static void ajouteEvenement({required String titre, String lieu = "", String description = "",

@@ -124,22 +124,24 @@ class _Evenement extends State<Evenement> {
                     color = Colors.yellow;
                   }
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        filtreEvenement = nomOnglet.values.toList()[index];
+                  return Container(
+                    color: nomOnglet.values.toList()[index] == filtreEvenement ? Colors.deepPurple[300] : Colors.transparent,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          filtreEvenement = nomOnglet.values.toList()[index];
 
-                        //int placeActuelle = listener.itemPositions.value.last.index;
-                        //String sDateActuelle = listeEvenement.keys.toList()[placeActuelle];
+                          //int placeActuelle = listener.itemPositions.value.last.index;
+                          //String sDateActuelle = listeEvenement.keys.toList()[placeActuelle];
 
-                        listeEvenement = IOEvenement.getEvenement(
-                          debut: dateDebutListe,
-                          fin: dateFinListe,
-                          filtre: filtreEvenement,
-                          filtreRecherche : widget.filtreRecherche,
-                        );
+                          listeEvenement = IOEvenement.getEvenement(
+                            debut: dateDebutListe,
+                            fin: dateFinListe,
+                            filtre: filtreEvenement,
+                            filtreRecherche : widget.filtreRecherche,
+                          );
 
-                        /*DateTime dateActuelle = DateFormat('dd/MM/yyyy').parse(sDateActuelle);
+                          /*DateTime dateActuelle = DateFormat('dd/MM/yyyy').parse(sDateActuelle);
                       indexToJumpTo = 0;
                       if (listeEvenement.isNotEmpty) {
                         while (DateFormat('dd/MM/yyyy')
@@ -153,17 +155,18 @@ class _Evenement extends State<Evenement> {
                           itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
                         });
                       }*/
-                      });
-                    },
-                    child: Container(
-                      height: 60,
-                      color: Colors.transparent,
-                      child: Center(
-                        child: Text(
-                          nomOnglet.keys.toList()[index],
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 14,
+                        });
+                      },
+                      child: Container(
+                        height: 60,
+                        color: Colors.transparent,
+                        child: Center(
+                          child: Text(
+                            nomOnglet.keys.toList()[index],
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
