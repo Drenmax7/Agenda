@@ -1,100 +1,50 @@
-import 'package:agenda/widget/snackbar.dart';
+import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../io_evenement.dart';
+import '../widget/datetime_picker.dart';
+import '../widget/snackbar.dart';
+import '../widget/text_field.dart';
 
 class AjoutEvenement extends StatefulWidget {
-  const AjoutEvenement({super.key, required this.selectedDate});
+  const AjoutEvenement({super.key, this.selectedDate, this.evenement});
 
   final DateTime? selectedDate;
+  final Map<String,dynamic>? evenement;
 
   @override
   State<AjoutEvenement> createState() => _AjoutEvenement();
 }
 
 class _AjoutEvenement extends State<AjoutEvenement> {
-  final PageController pageController = PageController(initialPage: 0);
-  int pageActuelle = 0;
+  @override
+  void initState() {
+    super.initState();
 
+    if (widget.evenement != null){
+      controllerIntitule.text = widget.evenement!["titre"];
+
+      if (widget.evenement!["lieu"] != null) {
+        controllerLieu.text = widget.evenement!["lieu"];
+      }
+      if (widget.evenement!["description"] != null) {
+        controllerDescription.text = widget.evenement!["description"];
+      }
+
+      controllerDateDebut.text = "${widget.evenement!["jourDebut"]} ${widget.evenement!["heureDebut"]}";
+      controllerDateFin.text = "${widget.evenement!["jourFin"]} ${widget.evenement!["heureFin"]}";
+    }
+  }
+
+  TextEditingController controllerIntitule = TextEditingController();
+  TextEditingController controllerLieu = TextEditingController();
+  TextEditingController controllerDescription = TextEditingController();
+  TextEditingController controllerDateDebut = TextEditingController();
+  TextEditingController controllerDateFin = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    IOEvenement.generateSample();
-
     return Scaffold(
-      appBar: onglets(),
-      body: PageView(
-        controller: pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          evenement(),
-          anniversaire(),
-          parametre(),
-        ],
-      )
-    );
-  }
-
-  AppBar onglets(){
-    List<String> nomOnglet = [
-      "Evénements",
-      "Anniversaire",
-      "⚙️"
-    ];
-
-    Map<int, FlexColumnWidth> columnWidth = {};
-    for (int i = 0; i < nomOnglet.length; i++) {
-      columnWidth[i] = FlexColumnWidth(nomOnglet[i].length.toDouble());
-    }
-
-    return AppBar(
-      backgroundColor: Colors.deepPurple,
-      title: Table(
-        columnWidths: columnWidth,
-        children: [
-          TableRow(
-            children: List.generate(
-                nomOnglet.length,
-                (index) {
-                  Color color = Colors.grey.shade300;
-                  if (pageActuelle == index) {
-                    color = Colors.yellow;
-                  }
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        pageActuelle = index;
-                        pageController.jumpToPage(index);
-                      });
-                    },
-                    child: Container(
-                      height: 80,
-                      color: pageActuelle == index ? Colors.deepPurple[700] : Colors.transparent,
-                      child: Center(
-                        child: Text(
-                          nomOnglet[index],
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  TextEditingController evControllerIntitule = TextEditingController();
-  TextEditingController evControllerLieu = TextEditingController();
-  TextEditingController evControllerDescription = TextEditingController();
-  TextEditingController evControllerDebut = TextEditingController();
-  TextEditingController evControllerFin = TextEditingController();
-  Widget evenement() {
-    return Scaffold(
+      appBar: widget.evenement == null ? null : AppBar(),
       floatingActionButton: confirmerEvenement(),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -103,132 +53,21 @@ class _AjoutEvenement extends State<AjoutEvenement> {
             children: [
               Center(
                 child: Text(
-                  "Ajouter un Événement",
+                  widget.evenement == null ? "Ajouter un Événement" : "Detail d'un Événement",
                   style: TextStyle(
                     fontSize: 24,
                   ),
                 ),
               ),
-              _buildTextField(evControllerIntitule, "Intitulé"),
-              _buildTextField(evControllerLieu, "Lieu"),
-              _buildTextField(evControllerDescription, "Description", maxLines: 3),
-              _buildTextField(evControllerDebut, "Debut"),
-              _buildTextField(evControllerFin, "Fin"),
+              buildTextField(controllerIntitule, "Intitulé"),
+              buildTextField(controllerLieu, "Lieu"),
+              buildTextField(controllerDescription, "Description", maxLines: 3),
+              _buildDatePickerFieldEvenement(controllerDateDebut, controllerDateFin, "Debut", true),
+              _buildDatePickerFieldEvenement(controllerDateFin, controllerDateDebut, "Fin", false),
+
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  TextEditingController anControllerNom = TextEditingController();
-  TextEditingController anControllerDetail = TextEditingController();
-  TextEditingController anControllerDate = TextEditingController();
-  TextEditingController anControllerNaissance = TextEditingController();
-  Widget anniversaire() {
-    return Scaffold(
-      floatingActionButton: confirmerAnniversaire(),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          child: Column(
-            children: [
-              Center(
-                  child: Text(
-                    "Ajouter un Anniversaire",
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-              ),
-              _buildTextField(anControllerNom, "Nom de la Personne"),
-              _buildTextField(anControllerDetail, "Detail", maxLines: 3),
-              _buildTextField(anControllerDate, "Date"),
-              _buildTextField(anControllerNaissance, "Année de Naissance"),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget parametre() {
-    return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Import/Export',
-              style: TextStyle(
-                  fontSize: 24
-              ),),
-          ),
-          Expanded(
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      IOEvenement.import().then((resultat) {
-                        if (resultat) {
-                          showSnackbar(context, "🟢 Import réussie");
-                        } else {
-                          showSnackbar(context, "🔴 Erreur lors de l'import");
-                        }
-                      });
-                    },
-                    icon: Icon(Icons.file_download),
-                    label: Text(
-                      'Import',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent.shade700,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 8,
-                    ),
-                  ),
-                  SizedBox(width: 50,),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      IOEvenement.export().then((resultat) {
-                        if (resultat) {
-                          showSnackbar(context, "🟢 Export réussie");
-                        } else {
-                          showSnackbar(context, "🔴 Erreur lors de l'export");
-                        }
-                      });
-                    },
-                    icon: Icon(Icons.file_upload),
-                    label: Text(
-                      'Export',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent.shade700,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 8,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -236,19 +75,32 @@ class _AjoutEvenement extends State<AjoutEvenement> {
   FloatingActionButton confirmerEvenement(){
     return FloatingActionButton(
       onPressed: () {
-        List<String> dateDebut = evControllerDebut.text.split(" ")[0].split("/");
-        String heureDebut = evControllerDebut.text.split(" ")[1];
-        List<String> dateFin = evControllerFin.text.split(" ")[0].split("/");
-        String heureFin = evControllerFin.text.split(" ")[1];
+        if (controllerDateDebut.text.isEmpty) {
+          showSnackbar(context, "Veuillez indiquer une date de debut");
+          return;
+        }
+        if (controllerDateFin.text.isEmpty) {
+          showSnackbar(context, "Veuillez indiquer une date de fin");
+          return;
+        }
+        if (controllerIntitule.text.isEmpty) {
+          showSnackbar(context, "Veuillez indiquer un nom d'événement");
+          return;
+        }
 
-        IOEvenement.ajouteEvenement(
+        List<String> dateDebut = controllerDateDebut.text.split(" ")[0].split("/");
+        String heureDebut = controllerDateDebut.text.split(" ")[1];
+        List<String> dateFin = controllerDateFin.text.split(" ")[0].split("/");
+        String heureFin = controllerDateFin.text.split(" ")[1];
+
+        AjoutBDD.ajouteEvenement(
             jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
             heureDebut: heureDebut,
             jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
             heureFin: heureFin,
-            lieu: evControllerLieu.text,
-            titre: evControllerIntitule.text,
-            description: evControllerDescription.text
+            lieu: controllerLieu.text,
+            titre: controllerIntitule.text,
+            description: controllerDescription.text
         );
         Navigator.pop(context);
       },
@@ -257,41 +109,61 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     );
   }
 
-  FloatingActionButton confirmerAnniversaire(){
-    return FloatingActionButton(
-      onPressed: () {
-        List<String> date = anControllerDate.text.split("/");
+  Widget _buildDatePickerFieldEvenement(TextEditingController dateController, TextEditingController otherController,  String label, bool controllerEstDebut) {
+    DateFormat stringToDateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
+    DateFormat stringToDateFormat = DateFormat('dd/MM/yyyy');
 
-        int naissance = 0;
-        if (anControllerNaissance.text != ""){
-          naissance = int.parse(anControllerNaissance.text);
-        }
-
-        IOEvenement.ajouteAnniversaire(
-            jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
-            nom: anControllerNom.text,
-            details: anControllerDetail.text,
-            naissance: naissance,
-        );
-        Navigator.pop(context);
-      },
-      tooltip: "Confirmer création",
-      child: Icon(Icons.save),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, String label,
-      {int maxLines = 1}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
+        controller: dateController,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          suffixIcon: Icon(Icons.date_range),
         ),
-        validator: null,
+        readOnly: true,
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (_) {
+              return SizedBox(
+                height: 250,
+                child: DateTimePicker(
+                  selectedDate: dateController.text.isNotEmpty ? stringToDateTimeFormat.parse(dateController.text) : widget.selectedDate,
+                  onTimeChanged: (time) {
+                    String day = time.day.toString().padLeft(2, "0");
+                    String month = time.month.toString().padLeft(2, "0");
+                    String year = time.year.toString().padLeft(4, "0");
+                    String hour = time.hour.toString().padLeft(2, "0");
+                    String minute = time.minute.toString().padLeft(2, "0");
+
+                    dateController.text = "$day/$month/$year $hour:$minute";
+
+                    if (otherController.text.isEmpty){
+                      otherController.text = dateController.text;
+                      return;
+                    }
+
+                    DateTime other = stringToDateFormat.parse(otherController.text);
+                    DateTime date = stringToDateFormat.parse(dateController.text);
+
+
+                    if (controllerEstDebut && other.isBefore(date)){
+                      otherController.text = dateController.text;
+                      return;
+                    }
+
+                    if (!controllerEstDebut && other.isAfter(date)){
+                      otherController.text = dateController.text;
+                      return;
+                    }
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

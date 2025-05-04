@@ -1,6 +1,10 @@
-import 'package:agenda/io_evenement.dart';
+import 'package:agenda/pages/ajout_anniversaire.dart';
+import 'package:agenda/pages/ajout_evenement.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../bdd/bdd.dart';
+import '../pages/ajout_fete.dart';
 
 class RecapitulatifEvenement extends StatelessWidget {
   const RecapitulatifEvenement({super.key, required this.evenement, required this.jour});
@@ -10,29 +14,54 @@ class RecapitulatifEvenement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 40,
-            child: Center(
-              child: decorationEvenement(),
+    return Material(
+      color: Colors.transparent,//pour que le gesture detector puisse cliquer dessus
+      child: InkWell(
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => descriptifEvenement()),
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 6),
+          child: SizedBox(
+            height: 40,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: decorationEvenement(),
+                  ),
+                ),
+                VerticalDivider(
+                  thickness: 3,
+                  color: couleurEvenement(),
+                ),
+                Text(
+                  previewEvenement(),
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ],
             ),
           ),
-          VerticalDivider(
-            thickness: 3,
-            color: couleurEvenement(),
-          ),
-          Text(
-            previewEvenement(),
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  descriptifEvenement() {
+    switch (evenement["type"]!){
+      case TypeEvenement.evenement :
+        return AjoutEvenement(evenement: evenement,);
+      case TypeEvenement.anniversaire :
+        return AjoutAnniversaire(anniversaire: evenement,);
+      case TypeEvenement.fete :
+        return AjoutFete(fete: evenement,);
+    }
   }
 
   Widget decorationEvenement(){

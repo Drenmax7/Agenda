@@ -13,7 +13,7 @@ class ListeEvenement extends StatelessWidget {
     
     for (int i = 0; i < evenements.length; i++){
       if (i != 0){
-        colonneEvenement.add( Divider());
+        colonneEvenement.add( Divider(height: 0,));
       }
       
       colonneEvenement.add(
@@ -21,10 +21,9 @@ class ListeEvenement extends StatelessWidget {
       );
     }
     
-    
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),

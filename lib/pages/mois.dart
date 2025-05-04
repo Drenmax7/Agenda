@@ -15,7 +15,7 @@ class _Mois extends State<Mois> {
   Widget build(BuildContext context) {
     return Scaffold(
       body : Text("page du mois"),
-      floatingActionButton: boutonAjout(context, DateTime.now()),
+      floatingActionButton: boutonAjout(context, DateTime.now(), (){}),
     );
   }
 }

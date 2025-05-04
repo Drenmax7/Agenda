@@ -1,4 +1,4 @@
-import 'package:agenda/io_evenement.dart';
+import 'package:agenda/bdd/get_bdd.dart';
 import 'package:agenda/utils.dart';
 import 'package:agenda/widget/barre_recherche.dart';
 import 'package:agenda/widget/liste_evenement.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../bdd/bdd.dart';
 import '../widget/bouton_ajout.dart';
 
 class Evenement extends StatefulWidget {
@@ -33,13 +34,6 @@ class _Evenement extends State<Evenement> {
   void initState() {
     super.initState();
 
-    listeEvenement = IOEvenement.getEvenement(
-      debut: dateDebutListe,
-      fin: dateFinListe,
-      filtre: filtreEvenement,
-      filtreRecherche : widget.filtreRecherche,
-    );
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
     });
@@ -59,6 +53,7 @@ class _Evenement extends State<Evenement> {
             child: Visibility(
               visible: atStart,
               child: FloatingActionButton(
+                heroTag: "btn1",
                 onPressed: (){
                   setState(() {
                     itemScrollController.scrollTo(index: indexToJumpTo, alignment: 0.5, duration: Duration(milliseconds: 500));
@@ -72,7 +67,16 @@ class _Evenement extends State<Evenement> {
           Positioned(
             bottom: 10,
             right: 10,
-            child: boutonAjout(context, null),
+            child: boutonAjout(context, null, (){
+              setState(() {
+                listeEvenement = GetBdd.getEvenement(
+                  debut: dateDebutListe,
+                  fin: dateFinListe,
+                  filtre: filtreEvenement,
+                  filtreRecherche : widget.filtreRecherche,
+                );
+              });
+            }),
           ),
           Positioned(
             bottom: 80,
@@ -80,6 +84,7 @@ class _Evenement extends State<Evenement> {
             child: Visibility(
               visible: !widget.cacheRecherche,
               child: FloatingActionButton(
+                heroTag: "btn2",
                 onPressed: (){
                   showSearch(
                     context: context,
@@ -131,30 +136,16 @@ class _Evenement extends State<Evenement> {
                         setState(() {
                           filtreEvenement = nomOnglet.values.toList()[index];
 
-                          //int placeActuelle = listener.itemPositions.value.last.index;
-                          //String sDateActuelle = listeEvenement.keys.toList()[placeActuelle];
-
-                          listeEvenement = IOEvenement.getEvenement(
+                          listeEvenement = GetBdd.getEvenement(
                             debut: dateDebutListe,
                             fin: dateFinListe,
                             filtre: filtreEvenement,
                             filtreRecherche : widget.filtreRecherche,
                           );
 
-                          /*DateTime dateActuelle = DateFormat('dd/MM/yyyy').parse(sDateActuelle);
-                      indexToJumpTo = 0;
-                      if (listeEvenement.isNotEmpty) {
-                        while (DateFormat('dd/MM/yyyy')
-                            .parse(listeEvenement.keys.toList()[indexToJumpTo])
-                            .isBefore(
-                            dateActuelle)) {
-                          indexToJumpTo++;
-                        }
-                        print("saut a $indexToJumpTo");
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
-                        });
-                      }*/
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
+                          });
                         });
                       },
                       child: Container(
@@ -181,83 +172,93 @@ class _Evenement extends State<Evenement> {
   }
 
   Widget creeListe(){
+    listeEvenement = GetBdd.getEvenement(
+      debut: dateDebutListe,
+      fin: dateFinListe,
+      filtre: filtreEvenement,
+      filtreRecherche : widget.filtreRecherche,
+    );
+
     List<String> listeDates = listeEvenement.keys.toList();
     int i = 0;
     if (listeDates.isNotEmpty) {
-      while (DateFormat('dd/MM/yyyy').parse(listeDates[i]).isBefore(
-          DateTime.now())) {
+      while (i < listeDates.length && DateFormat('dd/MM/yyyy').parse(listeDates[i]).isBefore(DateTime.now())) {
         i++;
       }
     }
     indexToJumpTo = i;
 
-    listener.itemPositions.addListener(() {
-      if (listener.itemPositions.value.isEmpty){
-        return;
-      }
-
-      bool newAtStart = false;
-      for (ItemPosition i in listener.itemPositions.value){
-        newAtStart |= i.index == indexToJumpTo;
-      }
-      newAtStart = !newAtStart;
-      bool changement = newAtStart != atStart;
-
-      int? ancienneTaille;
-      if (listener.itemPositions.value.last.index == 0){
-        changement = true;
-        ancienneTaille = listeEvenement.length;
-        dateDebutListe = dateDebutListe.subtract(Duration(days: 365));
-      }
-
-      if (listener.itemPositions.value.last.index == listeDates.length-1){
-        changement = true;
-        dateFinListe = dateFinListe.add(Duration(days: 365));
-      }
-
-      if (changement){
-        listeEvenement = IOEvenement.getEvenement(
-          debut: dateDebutListe,
-          fin: dateFinListe,
-          filtre: filtreEvenement,
-          filtreRecherche : widget.filtreRecherche,
-        );
-
-        if (ancienneTaille != null){
-          int ajout = listeEvenement.length - ancienneTaille;
-          itemScrollController.jumpTo(index: listener.itemPositions.value.last.index + ajout + 1);
-        }
-
-        setState(() {
-          atStart = newAtStart;
-        });
-      }
+    List<Widget> liste = List.generate(listeEvenement.keys.length, (index) {
+      return Container(
+        padding: EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Text(
+                convertDateCourtToLong(listeDates[index]),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: isToday(listeDates[index]) ? Colors.blue : Colors.black,
+                ),
+              ),
+            ),
+            ListeEvenement(evenements: listeEvenement[listeDates[index]]!, jour: listeDates[index]),
+          ],
+        ),
+      );
     });
 
     return ScrollablePositionedList.builder(
       itemScrollController: itemScrollController,
-      itemCount: listeEvenement.keys.length,
-      itemPositionsListener: listener,
+      itemCount: liste.length + 2,
       itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Text(
-                  convertDateCourtToLong(listeDates[index]),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: isToday(listeDates[index]) ? Colors.blue : Colors.black,
-                  ),
-                ),
+        if (index == 0){
+          return TextButton.icon(
+            onPressed: () {
+              setState(() {
+                dateDebutListe = dateDebutListe.subtract(Duration(days: 365));
+              });
+            },
+            icon: Icon(Icons.expand_less),
+            label: Text(
+              "Evenement avant le ${formatageDateLongYear.format(dateDebutListe)}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
-              ListeEvenement(evenements: listeEvenement[listeDates[index]]!, jour: listeDates[index]),
-            ],
-          ),
-        );
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.blue,
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            ),
+          );
+        }
+        else if (index == liste.length + 1){
+          return TextButton.icon(
+            onPressed: () {
+              setState(() {
+                dateFinListe = dateFinListe.add(Duration(days: 365));
+              });
+            },
+            icon: Icon(Icons.expand_more),
+            label: Text(
+              "Evenement apres le ${formatageDateLongYear.format(dateFinListe)}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.blue,
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            ),
+          );
+        }
+        else {
+          return liste[index-1];
+        }
       },
     );
   }

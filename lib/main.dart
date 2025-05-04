@@ -4,7 +4,7 @@ import 'package:agenda/pages/mois.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'io_evenement.dart';
+import 'bdd/io_evenement.dart';
 
 main() {
   runApp(const MyApp());
