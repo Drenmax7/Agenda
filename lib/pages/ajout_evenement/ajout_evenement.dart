@@ -1,16 +1,20 @@
 import 'package:agenda/bdd/ajout_bdd.dart';
+import 'package:agenda/bdd/modification_bdd.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../widget/datetime_picker.dart';
-import '../widget/snackbar.dart';
-import '../widget/text_field.dart';
+import '../../bdd/suppression_BDD.dart';
+import '../../widget/information/confirmation_box.dart';
+import '../../widget/picker/datetime_picker.dart';
+import '../../widget/information/snackbar.dart';
+import '../../widget/form/text_field.dart';
 
 class AjoutEvenement extends StatefulWidget {
-  const AjoutEvenement({super.key, this.selectedDate, this.evenement});
+  const AjoutEvenement({super.key, this.selectedDate, this.evenement, this.specialFunction});
 
   final DateTime? selectedDate;
   final Map<String,dynamic>? evenement;
+  final void Function(VoidCallback)? specialFunction;
 
   @override
   State<AjoutEvenement> createState() => _AjoutEvenement();
@@ -64,7 +68,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
               buildTextField(controllerDescription, "Description", maxLines: 3),
               _buildDatePickerFieldEvenement(controllerDateDebut, controllerDateFin, "Debut", true),
               _buildDatePickerFieldEvenement(controllerDateFin, controllerDateDebut, "Fin", false),
-
+              if (widget.evenement != null) supprimerBouton(),
             ],
           ),
         ),
@@ -93,15 +97,32 @@ class _AjoutEvenement extends State<AjoutEvenement> {
         List<String> dateFin = controllerDateFin.text.split(" ")[0].split("/");
         String heureFin = controllerDateFin.text.split(" ")[1];
 
-        AjoutBDD.ajouteEvenement(
-            jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
-            heureDebut: heureDebut,
-            jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
-            heureFin: heureFin,
-            lieu: controllerLieu.text,
-            titre: controllerIntitule.text,
-            description: controllerDescription.text
-        );
+        if (widget.evenement == null){
+          AjoutBDD.ajouteEvenement(
+              jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
+              heureDebut: heureDebut,
+              jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
+              heureFin: heureFin,
+              lieu: controllerLieu.text,
+              titre: controllerIntitule.text,
+              description: controllerDescription.text
+          );
+        }
+        else {
+          widget.specialFunction!((){
+            ModificationBdd.modifierEvenement(
+              id: widget.evenement!["id"],
+              jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
+              heureDebut: heureDebut,
+              jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
+              heureFin: heureFin,
+              lieu: controllerLieu.text,
+              titre: controllerIntitule.text,
+              description: controllerDescription.text,
+            );
+          });
+        }
+
         Navigator.pop(context);
       },
       tooltip: "Confirmer création",
@@ -164,6 +185,31 @@ class _AjoutEvenement extends State<AjoutEvenement> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget supprimerBouton() {
+    return TextButton.icon(
+      onPressed: () {
+        confirmDeletion(context, () {
+          widget.specialFunction!(() {
+            SuppressionBdd.supprimerEvenement(widget.evenement!["id"]);
+            Navigator.pop(context);
+          });
+        });
+      },
+      icon: Icon(Icons.delete),
+      label: Text(
+        "Supprimer l'evenement",
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.red,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       ),
     );
   }

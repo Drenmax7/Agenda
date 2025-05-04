@@ -1,16 +1,20 @@
 import 'package:agenda/bdd/ajout_bdd.dart';
+import 'package:agenda/bdd/modification_bdd.dart';
+import 'package:agenda/widget/information/confirmation_box.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../widget/date_picker.dart';
-import '../widget/snackbar.dart';
-import '../widget/text_field.dart';
+import '../../bdd/suppression_BDD.dart';
+import '../../widget/picker/date_picker.dart';
+import '../../widget/information/snackbar.dart';
+import '../../widget/form/text_field.dart';
 
 class AjoutAnniversaire extends StatefulWidget {
-  const AjoutAnniversaire({super.key, this.selectedDate, this.anniversaire});
+  const AjoutAnniversaire({super.key, this.selectedDate, this.anniversaire, this.specialFunction});
 
   final DateTime? selectedDate;
   final Map<String,dynamic>? anniversaire;
+  final void Function(VoidCallback)? specialFunction;
 
   @override
   State<AjoutAnniversaire> createState() => _AjoutAnniversaire();
@@ -60,6 +64,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
               buildTextField(controllerDetail, "Detail", maxLines: 3),
               _buildDatePickerFieldAnniversaire(controllerDate, controllerNaissance, "Date"),
               buildTextField(controllerNaissance, "Année de Naissance"),
+              if (widget.anniversaire != null) supprimerBouton(),
             ],
           ),
         ),
@@ -86,12 +91,27 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
           naissance = int.parse(controllerNaissance.text);
         }
 
-        AjoutBDD.ajouteAnniversaire(
-          jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
-          nom: controllerNom.text,
-          details: controllerDetail.text,
-          naissance: naissance,
-        );
+        if (widget.anniversaire == null){
+          AjoutBDD.ajouteAnniversaire(
+            jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
+            nom: controllerNom.text,
+            details: controllerDetail.text,
+            naissance: naissance,
+          );
+        }
+        else {
+          widget.specialFunction!((){
+            ModificationBdd.modifierAnniversaire(
+              id:widget.anniversaire!["id"],
+              date:widget.anniversaire!["date"],
+              jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
+              nom: controllerNom.text,
+              details: controllerDetail.text,
+              naissance: naissance,
+            );
+          });
+        }
+
         Navigator.pop(context);
       },
       tooltip: "Confirmer création",
@@ -153,6 +173,31 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget supprimerBouton() {
+    return TextButton.icon(
+      onPressed: () {
+        confirmDeletion(context, () {
+          widget.specialFunction!(() {
+            SuppressionBdd.supprimerAnniversaire(widget.anniversaire!["id"], widget.anniversaire!["date"]);
+            Navigator.pop(context);
+          });
+        });
+      },
+      icon: Icon(Icons.delete),
+      label: Text(
+        "Supprimer l'anniversaire",
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.red,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       ),
     );
   }

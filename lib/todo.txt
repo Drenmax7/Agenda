@@ -1,1 +1,0 @@
-regler definlement liste : sauter a la date actuelle plutot qu"a un index

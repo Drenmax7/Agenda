@@ -1,6 +1,6 @@
-import 'package:agenda/pages/annee.dart';
-import 'package:agenda/pages/evenement.dart';
-import 'package:agenda/pages/mois.dart';
+import 'package:agenda/pages/principale/annee.dart';
+import 'package:agenda/pages/principale/evenement.dart';
+import 'package:agenda/pages/principale/mois.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 

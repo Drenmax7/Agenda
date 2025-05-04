@@ -1,9 +1,9 @@
-import 'package:agenda/pages/ajout_anniversaire.dart';
-import 'package:agenda/pages/ajout_evenement.dart';
-import 'package:agenda/widget/snackbar.dart';
+import 'package:agenda/pages/ajout_evenement/ajout_anniversaire.dart';
+import 'package:agenda/pages/ajout_evenement/ajout_evenement.dart';
+import 'package:agenda/widget/information/snackbar.dart';
 import 'package:flutter/material.dart';
 
-import '../bdd/io_evenement.dart';
+import '../../bdd/io_evenement.dart';
 
 class AjoutEvenementMenu extends StatefulWidget {
   const AjoutEvenementMenu({super.key, required this.selectedDate});
@@ -111,9 +111,9 @@ class _AjoutEvenementMenu extends State<AjoutEvenementMenu> {
                     onPressed: () {
                       IOEvenement.import().then((resultat) {
                         if (resultat) {
-                          showSnackbar(context, "🟢 Import réussie");
+                          showSnackbar(() {return context;}(), "🟢 Import réussie"); //warning sinon
                         } else {
-                          showSnackbar(context, "🔴 Erreur lors de l'import");
+                          showSnackbar(() {return context;}(), "🔴 Erreur lors de l'import");
                         }
                       });
                     },
@@ -139,9 +139,9 @@ class _AjoutEvenementMenu extends State<AjoutEvenementMenu> {
                     onPressed: () {
                       IOEvenement.export().then((resultat) {
                         if (resultat) {
-                          showSnackbar(context, "🟢 Export réussie");
+                          showSnackbar(() {return context;}(), "🟢 Export réussie"); //warning sinon
                         } else {
-                          showSnackbar(context, "🔴 Erreur lors de l'export");
+                          showSnackbar(() {return context;}(), "🔴 Erreur lors de l'export");
                         }
                       });
                     },

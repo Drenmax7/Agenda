@@ -1,13 +1,13 @@
 import 'package:agenda/bdd/get_bdd.dart';
 import 'package:agenda/utils.dart';
-import 'package:agenda/widget/barre_recherche.dart';
-import 'package:agenda/widget/liste_evenement.dart';
+import 'package:agenda/widget/form/barre_recherche.dart';
+import 'package:agenda/widget/list_event/liste_evenement.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../bdd/bdd.dart';
-import '../widget/bouton_ajout.dart';
+import '../../bdd/ajout_bdd.dart';
+import '../../bdd/bdd.dart';
+import '../../widget/bouton_ajout.dart';
 
 class Evenement extends StatefulWidget {
   const Evenement({super.key, this.cacheRecherche = false, this.filtreRecherche = ""});
@@ -182,7 +182,7 @@ class _Evenement extends State<Evenement> {
     List<String> listeDates = listeEvenement.keys.toList();
     int i = 0;
     if (listeDates.isNotEmpty) {
-      while (i < listeDates.length && DateFormat('dd/MM/yyyy').parse(listeDates[i]).isBefore(DateTime.now())) {
+      while (i < listeDates.length && dateFormatAnnee.parse(listeDates[i]).isBefore(DateTime.now())) {
         i++;
       }
     }
@@ -204,7 +204,7 @@ class _Evenement extends State<Evenement> {
                 ),
               ),
             ),
-            ListeEvenement(evenements: listeEvenement[listeDates[index]]!, jour: listeDates[index]),
+            ListeEvenement(evenements: listeEvenement[listeDates[index]]!, jour: listeDates[index], specialFunction: setState,),
           ],
         ),
       );

@@ -1,4 +1,4 @@
-import 'package:agenda/pages/evenement.dart';
+import 'package:agenda/pages/principale/evenement.dart';
 import 'package:flutter/material.dart';
 
 class Barrerecherche extends SearchDelegate {

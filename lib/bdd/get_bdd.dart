@@ -14,11 +14,18 @@ class GetBdd{
       if (filtre == TypeEvenement.tout || filtre == TypeEvenement.anniversaire) {
         List<dynamic>? listeAnniversaire;
         listeAnniversaire = BDD.anniversaire[dateFormatMois.format(i)];
+
         if (listeAnniversaire != null) {
           for (int id = 0; id < listeAnniversaire.length; id++) {
-            Map<String, dynamic> anniversaire = listeAnniversaire[id];
+            Map<String, dynamic> anniversaire = Map.from(listeAnniversaire[id]);
+
+            if (anniversaire["naissance"] > i.year){
+              continue;
+            }
+
             if (matchFilter(filtre : filtreRecherche, evenement : anniversaire)) {
-              anniversaire["id"] = "${dateFormatMois.format(i)} $id";
+              anniversaire["id"] = "$id";
+              anniversaire["date"] = dateFormatMois.format(i);
               evenementJour.add(anniversaire);
             }
           }
@@ -30,7 +37,7 @@ class GetBdd{
         listeIdEvenement = BDD.agenda[dateFormatAnnee.format(i)];
         if (listeIdEvenement != null) {
           for (String id in listeIdEvenement) {
-            Map<String, dynamic> event = BDD.evenement[id];
+            Map<String, dynamic> event = Map.from(BDD.evenement[id]);
             if (matchFilter(filtre : filtreRecherche, evenement : event)) {
               event["id"] = id;
               evenementJour.add(event);

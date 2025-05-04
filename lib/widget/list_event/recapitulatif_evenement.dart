@@ -1,16 +1,17 @@
-import 'package:agenda/pages/ajout_anniversaire.dart';
-import 'package:agenda/pages/ajout_evenement.dart';
+import 'package:agenda/pages/ajout_evenement/ajout_anniversaire.dart';
+import 'package:agenda/pages/ajout_evenement/ajout_evenement.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../bdd/bdd.dart';
-import '../pages/ajout_fete.dart';
+import '../../bdd/bdd.dart';
+import '../../pages/ajout_evenement/ajout_fete.dart';
 
 class RecapitulatifEvenement extends StatelessWidget {
-  const RecapitulatifEvenement({super.key, required this.evenement, required this.jour});
+  const RecapitulatifEvenement({super.key, required this.evenement, required this.jour, required this.specialFunction});
 
   final Map<String, dynamic> evenement;
   final String jour;
+  final void Function(VoidCallback) specialFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +57,9 @@ class RecapitulatifEvenement extends StatelessWidget {
   descriptifEvenement() {
     switch (evenement["type"]!){
       case TypeEvenement.evenement :
-        return AjoutEvenement(evenement: evenement,);
+        return AjoutEvenement(evenement: evenement, specialFunction: specialFunction,);
       case TypeEvenement.anniversaire :
-        return AjoutAnniversaire(anniversaire: evenement,);
+        return AjoutAnniversaire(anniversaire: evenement, specialFunction: specialFunction,);
       case TypeEvenement.fete :
         return AjoutFete(fete: evenement,);
     }
@@ -178,7 +179,12 @@ class RecapitulatifEvenement extends StatelessWidget {
 
         if (evenement["naissance"] != null){
           int age = DateFormat('dd/MM/yyyy').parse(jour).year - evenement["naissance"]! as int;
-          message = "$age ans";
+          if (age == 0){
+            message = "Naissance";
+          }
+          else {
+            message = "$age ans";
+          }
         }
         else{
           message = "Anniversaire";
