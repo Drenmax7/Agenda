@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 DateFormat dateFormatAnnee = DateFormat('dd/MM/yyyy');
 DateFormat dateFormatMois = DateFormat('dd/MM');
+DateFormat heureFormat = DateFormat.Hm();
 DateFormat formatageDateLongNoYear = DateFormat('EEEE d MMMM', 'fr_FR');
 DateFormat formatageDateLongYear = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
 

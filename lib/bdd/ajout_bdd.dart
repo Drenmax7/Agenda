@@ -50,6 +50,13 @@ class AjoutBDD{
       else{
         (BDD.agenda[dateFormatAnnee.format(i)] as List).add(id);
       }
+
+      (BDD.agenda[dateFormatAnnee.format(i)] as List).sort((a, b) {
+        String h1 = BDD.evenement[a]['heureDebut'];
+        String h2 = BDD.evenement[b]['heureDebut'];
+        return heureFormat.parse(h1).compareTo(heureFormat.parse(h2));
+      });
+
     }while (i.isBefore(jourFin));
 
     IOEvenement.save();
