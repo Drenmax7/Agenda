@@ -22,7 +22,7 @@ String convertDateCourtToLong(String formatCourt){
 }
 
 bool isToday(String dateFormatCourt){
-  DateTime date = DateFormat('dd/MM/yyyy').parse(dateFormatCourt);
+  DateTime date = dateFormatAnnee.parse(dateFormatCourt);
   DateTime today = DateTime.now();
 
   return date.year == today.year && date.month == today.month && date.day == today.day;

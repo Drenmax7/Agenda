@@ -1,6 +1,8 @@
 import 'package:agenda/widget/list_event/recapitulatif_evenement.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils.dart';
+
 class ListeEvenement extends StatelessWidget {
   const ListeEvenement({super.key, required this.evenements, required this.jour, required this.specialFunction});
 
@@ -26,7 +28,7 @@ class ListeEvenement extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: dateFormatAnnee.parse(jour).isBefore(DateTime.now().subtract(Duration(days: 1))) ? Colors.grey[350] : Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
