@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:external_path/external_path.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:permission_handler/permission_handler.dart';
@@ -82,8 +84,8 @@ class IOEvenement{
       return null;
     }
 
-    final Directory? directory = await getDownloadsDirectory();
-    final File file = File('${directory!.path}/evenementAgenda.json');
+    String directory = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOAD);
+    final File file = File('$directory/evenementAgenda.json');
 
     return file;
   }
@@ -107,12 +109,18 @@ class IOEvenement{
   }
 
   static Future<bool> import() async {
-    File? file = await getExportFile();
-    if (file == null){
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result == null) {
       return false;
     }
 
-    String contenu = await file.readAsString();
+    String? path = result.files.first.path;
+    if (path == null){
+      return false;
+    }
+
+    String contenu = await File(path).readAsString();
     Map<String, dynamic> dataAgenda = jsonDecode(contenu);
 
     BDD.anniversaire = dataAgenda["anniversaire"];

@@ -45,7 +45,8 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.anniversaire == null ? null : AppBar(),
+      backgroundColor: Colors.grey[200],
+      appBar: widget.anniversaire == null ? null : AppBar(backgroundColor: Colors.grey[200],),
       floatingActionButton: confirmerAnniversaire(),
       body: Padding(
         padding: EdgeInsets.all(16.0),

@@ -92,6 +92,7 @@ class _AjoutEvenementMenu extends State<AjoutEvenementMenu> {
 
   Widget parametre() {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: Column(
         children: [
           Padding(
