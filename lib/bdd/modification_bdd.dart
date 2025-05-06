@@ -1,5 +1,4 @@
 import 'package:agenda/bdd/ajout_bdd.dart';
-import 'package:agenda/bdd/bdd.dart';
 import 'package:agenda/bdd/suppression_BDD.dart';
 
 class ModificationBdd {

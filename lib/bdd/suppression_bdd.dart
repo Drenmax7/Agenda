@@ -1,4 +1,3 @@
-import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:agenda/bdd/io_evenement.dart';
 
 import '../utils.dart';

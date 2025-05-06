@@ -5,7 +5,6 @@ import 'package:agenda/widget/list_event/liste_evenement.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../bdd/ajout_bdd.dart';
 import '../../bdd/bdd.dart';
 import '../../widget/bouton_ajout.dart';
 
