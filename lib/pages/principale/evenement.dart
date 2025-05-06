@@ -23,12 +23,14 @@ class _Evenement extends State<Evenement> {
   ItemScrollController itemScrollController = ItemScrollController();
   ItemPositionsListener listener = ItemPositionsListener.create();
   int indexToJumpTo = 0;
-  bool atStart = true;
+  bool scrollAtStart = true;
 
   DateTime dateDebutListe = DateTime.now().subtract(Duration(days: 3650));
   DateTime dateFinListe = DateTime.now().add(Duration(days: 3650));
   late Map<String,List<dynamic>> listeEvenement;
   int filtreEvenement = TypeEvenement.tout;
+
+  final GlobalKey<_StartButton> startButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -50,18 +52,10 @@ class _Evenement extends State<Evenement> {
           Positioned(
             bottom: widget.cacheRecherche ? 80 : 150,
             right: 10,
-            child: Visibility(
-              visible: atStart,
-              child: FloatingActionButton(
-                heroTag: "btn1",
-                onPressed: (){
-                  setState(() {
-                    itemScrollController.scrollTo(index: indexToJumpTo, alignment: 0.5, duration: Duration(milliseconds: 500));
-                  });
-                },
-                tooltip: 'Jour actuelle',
-                child: const Icon(Icons.calendar_today),
-              ),
+            child: StartButton(
+              key: startButtonKey,
+              indexToJumpTo: indexToJumpTo,
+              itemScrollController: itemScrollController,
             ),
           ),
           Positioned(
@@ -188,6 +182,31 @@ class _Evenement extends State<Evenement> {
     }
     indexToJumpTo = i+1;
 
+    listener.itemPositions.addListener(() {
+      final positions = listener.itemPositions.value;
+
+      bool present = false;
+      for (var position in positions) {
+        if (position.itemLeadingEdge >= 0.0 && position.itemTrailingEdge <= 1.0) {
+          //print('Item ${position.index} est visible à l\'écran!');
+          if (position.index != indexToJumpTo){
+            continue;
+          }
+
+          present = true;
+          if (scrollAtStart == false){
+            scrollAtStart = true;
+            startButtonKey.currentState?.toggleVisibility(!scrollAtStart);
+          }
+        }
+      }
+
+      if (present == false && scrollAtStart == true){
+        scrollAtStart = false;
+        startButtonKey.currentState?.toggleVisibility(!scrollAtStart);
+      }
+    });
+
     List<Widget> liste = List.generate(listeEvenement.keys.length, (index) {
       return Container(
         padding: EdgeInsets.all(12),
@@ -211,6 +230,7 @@ class _Evenement extends State<Evenement> {
     });
 
     return ScrollablePositionedList.builder(
+      itemPositionsListener: listener,
       itemScrollController: itemScrollController,
       itemCount: liste.length + 2,
       itemBuilder: (context, index) {
@@ -262,4 +282,43 @@ class _Evenement extends State<Evenement> {
       },
     );
   }
+}
+
+
+class StartButton extends StatefulWidget {
+  const StartButton({super.key, required this.indexToJumpTo, required this.itemScrollController});
+
+  final int indexToJumpTo;
+  final ItemScrollController itemScrollController;
+
+  @override
+  State<StartButton> createState() => _StartButton();
+}
+
+class _StartButton extends State<StartButton> {
+  bool visible = true;
+
+  void toggleVisibility(bool visibility){
+    setState(() {
+      visible = visibility;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: FloatingActionButton(
+        heroTag: "btn1",
+        onPressed: (){
+          setState(() {
+            widget.itemScrollController.scrollTo(index: widget.indexToJumpTo, alignment: 0.5, duration: Duration(milliseconds: 500));
+          });
+        },
+        tooltip: 'Jour actuelle',
+        child: const Icon(Icons.calendar_today),
+      ),
+    );
+  }
+
 }

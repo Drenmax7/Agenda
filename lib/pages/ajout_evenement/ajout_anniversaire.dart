@@ -165,6 +165,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
         },
         child: AbsorbPointer(
           child: TextFormField(
+            readOnly: true,
             controller: dateController,
             decoration: InputDecoration(
               labelText: label,

@@ -101,6 +101,13 @@ class GetBdd{
       fete["deco"] = "️🙏";
     }
 
+    //Halloween
+    if (jour.month == DateTime.october && jour.day == 31) {
+      fete["nom"] = "Halloween";
+      fete["detail"] = "Fête traditionnelle célébrée la veille de la Toussaint, marquée par des déguisements et la collecte de bonbons.";
+      fete["deco"] = "🎃";
+    }
+
     //Toussaint
     if (jour.month == DateTime.november && jour.day == 1) {
       fete["nom"] = "Toussaint";
@@ -145,6 +152,31 @@ class GetBdd{
       fete["nom"] = "Lundi de Pentecôte";
       fete["detail"] = "Jour férié religieux célébrant l'effusion du Saint-Esprit";
       fete["deco"] = "🙏";
+    }
+
+    //Fetes des meres
+    DateTime feteMeres = DateTime(jour.year, DateTime.may, 31);
+    while (feteMeres.weekday != DateTime.sunday){
+      feteMeres = feteMeres.subtract(Duration(days: 1));
+    }
+    if (feteMeres.add(Duration(days: 1)).isAtSameMomentAs(lundiPentecoteDate)){
+      feteMeres.add(Duration(days: 7));
+    }
+    if (jour.month == feteMeres.month && jour.day == feteMeres.day) {
+      fete["nom"] = "Fête des Mères";
+      fete["detail"] = "Célébration des mamans 💐";
+      fete["deco"] = "🤱";
+    }
+
+    //Fetes des peres
+    DateTime fetePeres = DateTime(jour.year, DateTime.june, 21);
+    while (fetePeres.weekday != DateTime.sunday){
+      fetePeres = fetePeres.subtract(Duration(days: 1));
+    }
+    if (jour.month == fetePeres.month && jour.day == fetePeres.day) {
+      fete["nom"] = "Fête des Pères";
+      fete["detail"] = "Célébration des papas 🛠️";
+      fete["deco"] = "👨‍🍼";
     }
 
     if (fete.keys.length > 1){
