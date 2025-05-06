@@ -1,12 +1,14 @@
 import 'package:agenda/pages/principale/annee.dart';
 import 'package:agenda/pages/principale/evenement.dart';
 import 'package:agenda/pages/principale/mois.dart';
+import 'package:agenda/widget/information/notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'bdd/io_evenement.dart';
 
-main() {
+main() async {
   runApp(const MyApp());
 }
 
@@ -42,8 +44,13 @@ class _Agenda extends State<Agenda> {
   @override
   void initState() {
     super.initState();
+
     initializeDateFormatting('fr_FR');
-    chargerDonnees(); // Charger les données au démarrage
+    chargerDonnees().then((_) {
+      NotificationManager.initialize().then((_) {
+        NotificationManager.sendAnniversary();
+      });
+    });
   }
 
   Future<void> chargerDonnees() async {

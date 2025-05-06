@@ -40,10 +40,13 @@ class RecapitulatifEvenement extends StatelessWidget {
                   thickness: 3,
                   color: couleurEvenement(),
                 ),
-                Text(
-                  previewEvenement(),
-                  style: TextStyle(
-                    fontSize: 18,
+                Expanded(
+                  child: Text(
+                    previewEvenement(),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ],

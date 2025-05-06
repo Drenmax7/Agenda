@@ -1,5 +1,6 @@
 import 'package:agenda/pages/ajout_evenement/ajout_anniversaire.dart';
 import 'package:agenda/pages/ajout_evenement/ajout_evenement.dart';
+import 'package:agenda/widget/information/notification.dart';
 import 'package:agenda/widget/information/snackbar.dart';
 import 'package:flutter/material.dart';
 
