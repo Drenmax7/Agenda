@@ -61,7 +61,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
                   ),
                 ),
               ),
-              buildTextField(controllerNom, "Nom de la Personne"),
+              buildTextField(controllerNom, "Nom de la Personne", mode: TextCapitalization.words),
               buildTextField(controllerDetail, "Detail", maxLines: 3),
               _buildDatePickerFieldAnniversaire(controllerDate, controllerNaissance, "Date"),
               buildTextField(controllerNaissance, "Année de Naissance"),

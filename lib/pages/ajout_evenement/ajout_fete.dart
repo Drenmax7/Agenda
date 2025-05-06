@@ -43,7 +43,7 @@ class _AjoutFete extends State<AjoutFete> {
                   ),
                 ),
               ),
-              buildTextField(controllerNom, "Nom de la fêtes"),
+              buildTextField(controllerNom, "Nom de la fêtes", mode: TextCapitalization.words),
               buildTextField(controllerDetail, "Detail", maxLines: 3),
             ],
           ),

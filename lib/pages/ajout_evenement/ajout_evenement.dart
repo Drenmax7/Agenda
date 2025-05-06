@@ -64,7 +64,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                   ),
                 ),
               ),
-              buildTextField(controllerIntitule, "Intitulé"),
+              buildTextField(controllerIntitule, "Intitulé", mode: TextCapitalization.words),
               buildTextField(controllerLieu, "Lieu"),
               buildTextField(controllerDescription, "Description", maxLines: 3),
               _buildDatePickerFieldEvenement(controllerDateDebut, controllerDateFin, "Debut", true),
