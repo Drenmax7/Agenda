@@ -64,7 +64,9 @@ class _Agenda extends State<Agenda> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: onglets(),
-      body: dataLoaded ? pages() : Center(child: CircularProgressIndicator()),
+      body: SafeArea(
+        child: dataLoaded ? pages() : Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 

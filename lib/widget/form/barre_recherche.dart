@@ -27,7 +27,9 @@ class Barrerecherche extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return Center(
-      child: Evenement(cacheRecherche: true, filtreRecherche: query,)
+      child: SafeArea(
+          child: Evenement(cacheRecherche: true, filtreRecherche: query,)
+      ),
     );
   }
 
