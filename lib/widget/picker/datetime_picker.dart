@@ -46,7 +46,7 @@ class DateTimePickerState extends State<DateTimePicker> {
   }
 
   String datetimeToString(DateTime day){
-    DateFormat format = DateFormat('d MMM', 'fr');
+    DateFormat format = DateFormat('E d MMM', 'fr');
     String dateString = format.format(day);
     return dateString;
   }

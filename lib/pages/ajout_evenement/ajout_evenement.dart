@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../bdd/suppression_BDD.dart';
+import '../../utils.dart';
 import '../../widget/information/confirmation_box.dart';
 import '../../widget/picker/datetime_picker.dart';
 import '../../widget/information/snackbar.dart';
@@ -133,7 +134,6 @@ class _AjoutEvenement extends State<AjoutEvenement> {
 
   Widget _buildDatePickerFieldEvenement(TextEditingController dateController, TextEditingController otherController,  String label, bool controllerEstDebut) {
     DateFormat stringToDateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
-    DateFormat stringToDateFormat = DateFormat('dd/MM/yyyy');
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -167,8 +167,8 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                       return;
                     }
 
-                    DateTime other = stringToDateFormat.parse(otherController.text);
-                    DateTime date = stringToDateFormat.parse(dateController.text);
+                    DateTime other = dateFormatAnnee.parse(otherController.text);
+                    DateTime date = dateFormatAnnee.parse(dateController.text);
 
 
                     if (controllerEstDebut && other.isBefore(date)){
