@@ -14,6 +14,10 @@ class NotificationManager {
   static Future<void> initialize() async {
     await Permission.notification.request();
 
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
     WidgetsFlutterBinding.ensureInitialized();
 
     tz.initializeTimeZones();
@@ -33,7 +37,14 @@ class NotificationManager {
     int id = int.parse("${format.format(moment)}$numNotifJour");
 
     NotificationDetails details = NotificationDetails(
-      android: AndroidNotificationDetails('id', 'canal',),
+      android: AndroidNotificationDetails(
+        'id',
+        'canal',
+        channelDescription: "Rappel d'anniversaire",
+        importance: Importance.max,
+        priority: Priority.high,
+        fullScreenIntent: true,
+      ),
     );
 
     //final tz.TZDateTime scheduledDate = tz.TZDateTime.local(moment.year, moment.month, moment.day, 10);
@@ -42,11 +53,14 @@ class NotificationManager {
     tz.TZDateTime scheduledDate = tz.TZDateTime.local(
         now.year, now.month, now.day, now.hour, now.minute +1, now.second);
 
+    print("messsage $message");
+    print(scheduledDate);
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       titre,
       message,
-      scheduledDate,
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
       details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );

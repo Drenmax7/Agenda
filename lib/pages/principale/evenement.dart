@@ -215,7 +215,7 @@ class _Evenement extends State<Evenement> {
             Padding(
               padding: EdgeInsets.only(left: 16),
               child: Text(
-                convertDateCourtToLong(listeDates[index]),
+                convertDateCourtToLong(formatCourt: listeDates[index]),
                 style: TextStyle(
                   fontSize: 18,
                   color: isToday(listeDates[index]) ? Colors.blue : Colors.black,

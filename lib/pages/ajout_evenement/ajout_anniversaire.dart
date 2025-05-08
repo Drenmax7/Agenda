@@ -1,5 +1,6 @@
 import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:agenda/bdd/modification_bdd.dart';
+import 'package:agenda/utils.dart';
 import 'package:agenda/widget/information/confirmation_box.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,11 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
       if (widget.anniversaire!["naissance"] != null) {
         controllerNaissance.text = "${widget.anniversaire!["naissance"]}";
       }
+    }
+
+    if (widget.selectedDate != null){
+      //controllerNaissance.text = widget.selectedDate!.year.toString();
+      controllerDate.text = dateFormatMois.format(widget.selectedDate!);
     }
   }
 

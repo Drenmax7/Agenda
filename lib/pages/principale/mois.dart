@@ -1,6 +1,10 @@
+import 'package:agenda/widget/calendrier.dart';
 import 'package:flutter/material.dart';
 
+import '../../bdd/get_bdd.dart';
+import '../../utils.dart';
 import '../../widget/bouton_ajout.dart';
+import '../../widget/list_event/liste_evenement.dart';
 
 class Mois extends StatefulWidget {
   const Mois({super.key});
@@ -10,12 +14,116 @@ class Mois extends StatefulWidget {
 }
 
 class _Mois extends State<Mois> {
+  DateTime selectedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body : Text("page du mois"),
-      floatingActionButton: boutonAjout(context, DateTime.now(), (){}),
+      backgroundColor: Colors.grey[200],
+      body : Column(
+        children: [
+          Expanded(child: Calendrier(),),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 80),
+            child: Divider(),
+          ),
+          Expanded(child: evenementJour(),),
+        ],
+      ),
+      floatingActionButton: boutons(),
+    );
+  }
+
+  Widget boutons(){
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: boutonAjout(context, selectedDate, (){
+            setState(() {
+
+            });
+          }),
+        ),
+        Positioned(
+          bottom: 80,
+          right: 10,
+          child: FloatingActionButton(
+            heroTag: "btn1",
+            onPressed: (){
+              setState(() {
+                selectedDate = DateTime.now();
+              });
+            },
+            tooltip: 'Jour actuelle',
+            child: const Icon(Icons.calendar_today),
+          ),
+        ),
+      ],
+    );
+  }
+  
+  String getEcart(){
+    DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    int difference = selectedDate.difference(today).inDays.abs();
+
+    String ecart;
+    if (difference == 0){
+      ecart = "Aujourd'hui";
+    }
+    else if(today.isBefore(selectedDate)){
+      if (difference == 1){
+        ecart = "Demain";
+      }
+      else {
+        ecart = "Dans $difference jours";
+      }
+    }
+    else{
+      if (difference == 1){
+        ecart = "Hier";
+      }
+      else {
+        ecart = "Il y a $difference jours";
+      }
+    }
+    
+    return ecart;
+  }
+  
+  Widget evenementJour(){
+    List<dynamic> listeEvenement = GetBdd.getEvenement(
+      debut: selectedDate,
+      fin: selectedDate,
+    ).values.toList();
+    
+    if (listeEvenement.isNotEmpty){
+      listeEvenement = listeEvenement[0];
+    }
+
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Text(
+                getEcart(),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            listeEvenement.isNotEmpty ?
+            ListeEvenement(evenements: listeEvenement, jour: dateFormatAnnee.format(selectedDate), specialFunction: setState,) :
+            Text("Aucun événement prevu aujourd'hui"),
+          ],
+        ),
+      ),
     );
   }
 }

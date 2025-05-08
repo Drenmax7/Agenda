@@ -6,6 +6,7 @@ class GetBdd{
     required DateTime debut, required DateTime fin,
     int filtre = TypeEvenement.tout, String filtreRecherche = ""})
   {
+    fin = fin.add(Duration(days: 1));
 
     Map<String,List<dynamic>> listeEvenement = {};
     for (DateTime i = debut; i.isBefore(fin); i = i.add(Duration(days: 1))){
@@ -19,7 +20,7 @@ class GetBdd{
           for (int id = 0; id < listeAnniversaire.length; id++) {
             Map<String, dynamic> anniversaire = Map.from(listeAnniversaire[id]);
 
-            if (anniversaire["naissance"] > i.year){
+            if (anniversaire["naissance"] != null && anniversaire["naissance"] > i.year){
               continue;
             }
 

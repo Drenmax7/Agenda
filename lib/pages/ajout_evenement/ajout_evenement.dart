@@ -1,7 +1,6 @@
 import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:agenda/bdd/modification_bdd.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../bdd/suppression_BDD.dart';
 import '../../utils.dart';
@@ -38,6 +37,15 @@ class _AjoutEvenement extends State<AjoutEvenement> {
 
       controllerDateDebut.text = "${widget.evenement!["jourDebut"]} ${widget.evenement!["heureDebut"]}";
       controllerDateFin.text = "${widget.evenement!["jourFin"]} ${widget.evenement!["heureFin"]}";
+    }
+
+    if (widget.selectedDate != null){
+      DateTime dateAffiche = widget.selectedDate!;
+      while (dateAffiche.minute%15 != 0){
+        dateAffiche = dateAffiche.subtract(Duration(minutes: 1));
+      }
+      controllerDateDebut.text = dateFormatAnneeHeure.format(dateAffiche);
+      controllerDateFin.text = dateFormatAnneeHeure.format(dateAffiche);
     }
   }
 
@@ -133,8 +141,6 @@ class _AjoutEvenement extends State<AjoutEvenement> {
   }
 
   Widget _buildDatePickerFieldEvenement(TextEditingController dateController, TextEditingController otherController,  String label, bool controllerEstDebut) {
-    DateFormat stringToDateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
-
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
@@ -152,7 +158,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
               return SizedBox(
                 height: 250,
                 child: DateTimePicker(
-                  selectedDate: dateController.text.isNotEmpty ? stringToDateTimeFormat.parse(dateController.text) : widget.selectedDate,
+                  selectedDate: dateController.text.isNotEmpty ? dateFormatAnneeHeure.parse(dateController.text) : widget.selectedDate,
                   onTimeChanged: (time) {
                     String day = time.day.toString().padLeft(2, "0");
                     String month = time.month.toString().padLeft(2, "0");

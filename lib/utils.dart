@@ -1,13 +1,23 @@
 import 'package:intl/intl.dart';
 
 DateFormat dateFormatAnnee = DateFormat('dd/MM/yyyy');
+DateFormat dateFormatAnneeHeure = DateFormat('dd/MM/yyyy HH:mm');
 DateFormat dateFormatMois = DateFormat('dd/MM');
 DateFormat heureFormat = DateFormat.Hm();
 DateFormat formatageDateLongNoYear = DateFormat('EEEE d MMMM', 'fr_FR');
 DateFormat formatageDateLongYear = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
 
-String convertDateCourtToLong(String formatCourt){
-  DateTime date = dateFormatAnnee.parse(formatCourt);
+String convertDateCourtToLong({String? formatCourt, DateTime? datetime}){
+  DateTime date;
+  if (formatCourt != null) {
+    date = dateFormatAnnee.parse(formatCourt);
+  }
+  else if (datetime != null){
+    date = datetime;
+  }
+  else{
+    throw Exception("formatCourt et datetime ne peuvent pas etre tous les deux null");
+  }
 
   DateFormat formatage;
   if (DateTime.now().year == date.year){
