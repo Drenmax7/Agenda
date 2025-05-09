@@ -112,7 +112,7 @@ class _PageCalendrier extends State<PageCalendrier> {
         jour.day.toString(),
         style: TextStyle(
           color: color,
-          fontSize: 32,
+          fontSize: 24,
         ),
       ),
     );
