@@ -40,7 +40,10 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     }
 
     if (widget.selectedDate != null){
-      DateTime dateAffiche = widget.selectedDate!;
+      DateTime dateAffiche = DateTime(widget.selectedDate!.year,
+          widget.selectedDate!.month, widget.selectedDate!.day,
+          DateTime.now().hour, DateTime.now().minute
+      );
       while (dateAffiche.minute%15 != 0){
         dateAffiche = dateAffiche.subtract(Duration(minutes: 1));
       }

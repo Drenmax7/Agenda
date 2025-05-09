@@ -1,9 +1,9 @@
-import 'package:agenda/widget/calendrier.dart';
 import 'package:flutter/material.dart';
 
 import '../../bdd/get_bdd.dart';
 import '../../utils.dart';
 import '../../widget/bouton_ajout.dart';
+import '../../widget/calendrier/calendrier.dart';
 import '../../widget/list_event/liste_evenement.dart';
 
 class Mois extends StatefulWidget {
@@ -14,6 +14,8 @@ class Mois extends StatefulWidget {
 }
 
 class _Mois extends State<Mois> {
+  GlobalKey<CalendrierState> calendrierKey = GlobalKey();
+  GlobalKey<StartButtonState> startButtonKey = GlobalKey();
   DateTime selectedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   @override
@@ -22,12 +24,26 @@ class _Mois extends State<Mois> {
       backgroundColor: Colors.grey[200],
       body : Column(
         children: [
-          Expanded(child: Calendrier(),),
+          Expanded(
+            child: Calendrier(
+              key: calendrierKey,
+              startButtonKey : startButtonKey,
+              selectedDate: selectedDate,
+              changeDate: (DateTime newDate){
+                setState(() {
+                  selectedDate = DateTime(newDate.year, newDate.month, newDate.day);
+                  startButtonKey.currentState?.setVisibility(!areSameDay(selectedDate, DateTime.now()));
+                });
+              },
+            ),
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 80),
             child: Divider(),
           ),
-          Expanded(child: evenementJour(),),
+          Expanded(
+            child: evenementJour(),
+          ),
         ],
       ),
       floatingActionButton: boutons(),
@@ -49,16 +65,14 @@ class _Mois extends State<Mois> {
         Positioned(
           bottom: 80,
           right: 10,
-          child: FloatingActionButton(
-            heroTag: "btn1",
-            onPressed: (){
-              setState(() {
-                selectedDate = DateTime.now();
-              });
-            },
-            tooltip: 'Jour actuelle',
-            child: const Icon(Icons.calendar_today),
-          ),
+          child: StartButton(
+            key: startButtonKey,
+            fonction: (){
+            setState(() {
+              selectedDate = DateTime.now();
+              calendrierKey.currentState?.jumpToMonth(0);
+            });
+          },),
         ),
       ],
     );
@@ -126,4 +140,44 @@ class _Mois extends State<Mois> {
       ),
     );
   }
+}
+
+class StartButton extends StatefulWidget {
+  const StartButton({super.key, required this.fonction});
+
+  final Function() fonction;
+
+  @override
+  State<StartButton> createState() => StartButtonState();
+}
+
+class StartButtonState extends State<StartButton> {
+  bool visible = true;
+  DateTime timeout = DateTime.now();
+
+  void setVisibility(bool visibility){
+    if (DateTime.now().isAfter(timeout)) {
+      setState(() {
+        visible = visibility;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: FloatingActionButton(
+        heroTag: "btn1",
+        onPressed: () {
+          widget.fonction();
+          setVisibility(false);
+          timeout = DateTime.now().add(Duration(milliseconds: 500));
+        },
+        tooltip: 'Jour actuelle',
+        child: const Icon(Icons.calendar_today),
+      ),
+    );
+  }
+
 }

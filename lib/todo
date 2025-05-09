@@ -1,2 +1,6 @@
 embellir la page de detail d'evenement
 envoie de notification pour les anniversaire
+titre de la liste evenement de page mois est decallé si aucun evenement
+page controller doit changer de page si je clique sur un jour d'un autre mois
+adapter la taille du calendrier pour montrer tous les jours
+

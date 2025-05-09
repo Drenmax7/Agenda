@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import '../../utils.dart';
 
 class DateTimePicker extends StatefulWidget {
   final void Function(DateTime) onTimeChanged;
@@ -46,8 +47,7 @@ class DateTimePickerState extends State<DateTimePicker> {
   }
 
   String datetimeToString(DateTime day){
-    DateFormat format = DateFormat('E d MMM', 'fr');
-    String dateString = format.format(day);
+    String dateString = dateFormatJourMoisABR.format(day);
     return dateString;
   }
 
