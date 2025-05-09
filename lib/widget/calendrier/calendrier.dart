@@ -64,7 +64,19 @@ class CalendrierState extends State<Calendrier> {
         itemBuilder: (context, index) {
           return PageCalendrier(
             moisPage: DateTime(DateTime.now().year, DateTime.now().month+displayedMonth[index],1, ),
-            changeDate: widget.changeDate,
+            changeDate: (DateTime newDate) {
+              DateTime now = DateTime.now();
+              DateTime moisActuelle = DateTime(now.year, now.month + displayedMonth[currentPage], 1);
+
+              if (moisActuelle.month != newDate.month || moisActuelle.year != newDate.year){
+                int newPage = newDate.isBefore(moisActuelle) ? currentPage-1 : currentPage+1;
+                pageController.animateToPage(newPage,
+                  duration: Duration(milliseconds: 250),
+                  curve: Curves.linear);
+              }
+
+              widget.changeDate(newDate);
+            },
             selectedDate: widget.selectedDate,
           );
         },
