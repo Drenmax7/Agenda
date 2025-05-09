@@ -132,9 +132,7 @@ class _Mois extends State<Mois> {
                 ),
               ),
             ),
-            listeEvenement.isNotEmpty ?
-            ListeEvenement(evenements: listeEvenement, jour: dateFormatAnnee.format(selectedDate), specialFunction: setState,) :
-            Text("Aucun événement prevu aujourd'hui"),
+            ListeEvenement(evenements: listeEvenement, jour: dateFormatAnnee.format(selectedDate), specialFunction: setState,),
           ],
         ),
       ),

@@ -19,6 +19,10 @@ class RecapitulatifEvenement extends StatelessWidget {
       color: Colors.transparent,//pour que le gesture detector puisse cliquer dessus
       child: InkWell(
         onTap: () async {
+          if (evenement["type"] == TypeEvenement.aucun){
+            return;
+          }
+
           await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => descriptifEvenement()),
@@ -155,6 +159,13 @@ class RecapitulatifEvenement extends StatelessWidget {
             fontSize: 30,
           ),
         );
+      case TypeEvenement.aucun :
+        return Text(
+          "💤",
+          style: TextStyle(
+            fontSize: 30,
+          ),
+        );
     }
 
     return Text("n/a");
@@ -168,6 +179,8 @@ class RecapitulatifEvenement extends StatelessWidget {
         return Colors.red;
       case TypeEvenement.fete:
         return Colors.green;
+      case TypeEvenement.aucun:
+        return Colors.deepPurple;
     }
 
     return Colors.black;
@@ -204,6 +217,8 @@ class RecapitulatifEvenement extends StatelessWidget {
         return message;
       case TypeEvenement.fete:
         return evenement["nom"];
+      case TypeEvenement.aucun:
+        return "Aucun événement prévu ce jour là";
     }
 
     return "n/a";

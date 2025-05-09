@@ -9,4 +9,5 @@ class TypeEvenement{
   static const int anniversaire = 1;
   static const int evenement = 2;
   static const int fete = 3;
+  static const int aucun = 4;
 }

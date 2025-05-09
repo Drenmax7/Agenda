@@ -1,3 +1,4 @@
+import 'package:agenda/bdd/bdd.dart';
 import 'package:agenda/widget/list_event/recapitulatif_evenement.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,12 @@ class ListeEvenement extends StatelessWidget {
       
       colonneEvenement.add(
         RecapitulatifEvenement(evenement: evenements[i], jour : jour, specialFunction: specialFunction,)
+      );
+    }
+
+    if (evenements.isEmpty){
+      colonneEvenement.add(
+          RecapitulatifEvenement(evenement: {"type": TypeEvenement.aucun}, jour : jour, specialFunction: specialFunction,)
       );
     }
     
