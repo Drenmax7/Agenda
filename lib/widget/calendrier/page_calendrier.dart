@@ -79,10 +79,10 @@ class _PageCalendrier extends State<PageCalendrier> {
                   children: [
                     pastilleJour(iJour, currentMonth),
                     Container(
-                      decoration: GetBdd.getEvenement(debut: iJour, fin: iJour).isEmpty ? null : BoxDecoration(
+                      decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: Colors.blue[200]!,
+                              color: GetBdd.getEvenement(debut: iJour, fin: iJour).isEmpty ? Colors.transparent : Colors.blue[200]!,
                               width: 3
                           )
                       ),
