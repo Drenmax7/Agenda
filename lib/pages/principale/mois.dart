@@ -24,7 +24,8 @@ class _Mois extends State<Mois> {
       backgroundColor: Colors.grey[200],
       body : Column(
         children: [
-          Expanded(
+          SizedBox(
+            height: 400,
             child: Calendrier(
               key: calendrierKey,
               startButtonKey : startButtonKey,

@@ -1,3 +1,4 @@
+import 'package:agenda/bdd/bdd.dart';
 import 'package:agenda/bdd/get_bdd.dart';
 import 'package:agenda/utils.dart';
 import 'package:flutter/material.dart';
@@ -77,12 +78,12 @@ class _PageCalendrier extends State<PageCalendrier> {
                 ),
                 child: Column(
                   children: [
-                    pastilleJour(iJour, currentMonth),
+                    texteJour(iJour, currentMonth),
                     Container(
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: GetBdd.getEvenement(debut: iJour, fin: iJour).isEmpty ? Colors.transparent : Colors.blue[200]!,
+                              color: getCouleurPastilleJour(iJour),
                               width: 3
                           )
                       ),
@@ -98,7 +99,35 @@ class _PageCalendrier extends State<PageCalendrier> {
     );
   }
 
-  Widget pastilleJour(DateTime jour, int currentMonth) {
+  Color getCouleurPastilleJour(DateTime jour){
+    Color color = Colors.transparent;
+
+    Map<String,List<dynamic>> mapEvenements = GetBdd.getEvenement(debut: jour, fin: jour);
+    if (mapEvenements.isEmpty){
+      return color;
+    }
+    List<dynamic> evenements = mapEvenements.values.first;
+
+    for (Map<String, dynamic> event in evenements){
+      if (event["type"] == TypeEvenement.fete){
+        color = Colors.green;
+      }
+    }
+    for (Map<String, dynamic> event in evenements){
+      if (event["type"] == TypeEvenement.anniversaire){
+        color = Colors.red;
+      }
+    }
+    for (Map<String, dynamic> event in evenements){
+      if (event["type"] == TypeEvenement.evenement){
+        color = Colors.blue;
+      }
+    }
+    
+    return color;
+  }
+
+  Widget texteJour(DateTime jour, int currentMonth) {
     Color color = Colors.black;
     if (jour.month != currentMonth){
       color = Colors.grey;
