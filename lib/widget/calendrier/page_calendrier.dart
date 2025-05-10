@@ -27,12 +27,18 @@ class _PageCalendrier extends State<PageCalendrier> {
     }
 
     List<TableRow> agendaRows = [];
-    do{
+    /*do{
       agendaRows.add(
         getRows(agendaStart, currentMonth)
       );
       agendaStart = agendaStart.add(Duration(days: DateTime.daysPerWeek));
-    } while (agendaStart.month == currentMonth);
+    } while (agendaStart.month == currentMonth);*/
+    for (int i = 0; i < 6; i++){
+      agendaRows.add(
+          getRows(agendaStart, currentMonth)
+      );
+      agendaStart = agendaStart.add(Duration(days: DateTime.daysPerWeek));
+    }
 
     return Table(
         children: agendaRows,

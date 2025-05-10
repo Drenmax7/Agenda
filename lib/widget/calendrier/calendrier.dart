@@ -16,16 +16,25 @@ class Calendrier extends StatefulWidget {
 }
 
 class CalendrierState extends State<Calendrier> {
-  List<int> displayedMonth = List.generate(25, (index) => index-12, growable: true);
-
   late PageController pageController;
   late int currentPage;
 
+  int realIndex(int controllerIndex, {bool reverse = false}){
+    int ecart = 50000;
+    if (reverse){
+      return controllerIndex + ecart;
+    }
+    else {
+      return controllerIndex - ecart;
+    }
+
+  }
+  
   @override
   void initState() {
     super.initState();
-
-    currentPage = displayedMonth.indexOf(0);
+    
+    currentPage = realIndex(0, reverse: true);
     pageController = PageController(initialPage: currentPage);
   }
 
@@ -51,7 +60,7 @@ class CalendrierState extends State<Calendrier> {
           // Cette fonction est appelée quand la page change
           setState(() {
             currentPage = index;
-            if (displayedMonth[index] != 0) {
+            if (realIndex(index) != 0) {
               widget.startButtonKey.currentState?.setVisibility(true);
             }
             else if (areSameDay(widget.selectedDate, DateTime.now())){
@@ -59,14 +68,14 @@ class CalendrierState extends State<Calendrier> {
             }
           });
         },
-        itemCount: displayedMonth.length,
+        //itemCount: displayedMonth.length,
         physics: const ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           return PageCalendrier(
-            moisPage: DateTime(DateTime.now().year, DateTime.now().month+displayedMonth[index],1, ),
+            moisPage: DateTime(DateTime.now().year, DateTime.now().month+realIndex(index),1, ),
             changeDate: (DateTime newDate) {
               DateTime now = DateTime.now();
-              DateTime moisActuelle = DateTime(now.year, now.month + displayedMonth[currentPage], 1);
+              DateTime moisActuelle = DateTime(now.year, now.month + realIndex(currentPage), 1);
 
               if (moisActuelle.month != newDate.month || moisActuelle.year != newDate.year){
                 int newPage = newDate.isBefore(moisActuelle) ? currentPage-1 : currentPage+1;
@@ -106,7 +115,7 @@ class CalendrierState extends State<Calendrier> {
   }
   
   String getMonth(int numeroPage){
-    DateTime debutMois = DateTime(DateTime.now().year, DateTime.now().month+displayedMonth[numeroPage],1);
+    DateTime debutMois = DateTime(DateTime.now().year, DateTime.now().month+realIndex(numeroPage),1);
     String mois = dateFormatAnneeMoisTexte.format(debutMois);
     mois = mois[0].toUpperCase() + mois.substring(1);
     return mois;
@@ -125,7 +134,7 @@ class CalendrierState extends State<Calendrier> {
 
   void jumpToMonth(int i) {
     pageController.animateToPage(
-      displayedMonth.indexOf(i),
+      realIndex(i, reverse:true),
       duration: Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
