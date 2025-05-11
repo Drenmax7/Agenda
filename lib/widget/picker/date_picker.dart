@@ -65,6 +65,7 @@ class DatePickerState extends State<DatePicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 15,),
         buttons(),
         picker(),
       ],

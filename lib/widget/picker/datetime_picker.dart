@@ -55,6 +55,7 @@ class DateTimePickerState extends State<DateTimePicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 15,),
         buttons(),
         picker(),
       ],

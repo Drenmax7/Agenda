@@ -22,9 +22,12 @@ class AjoutAnniversaire extends StatefulWidget {
 }
 
 class _AjoutAnniversaire extends State<AjoutAnniversaire> {
+  FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
+    focusNode.requestFocus();
 
     if (widget.anniversaire != null){
       controllerNom.text = widget.anniversaire!["nom"];
@@ -67,7 +70,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
                   ),
                 ),
               ),
-              buildTextField(controllerNom, "Nom de la Personne", mode: TextCapitalization.words),
+              buildTextField(controllerNom, "Nom de la Personne", mode: TextCapitalization.words, focus: focusNode),
               buildTextField(controllerDetail, "Detail", maxLines: 3),
               _buildDatePickerFieldAnniversaire(controllerDate, controllerNaissance, "Date"),
               buildTextField(controllerNaissance, "Année de Naissance"),

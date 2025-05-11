@@ -21,9 +21,12 @@ class AjoutEvenement extends StatefulWidget {
 }
 
 class _AjoutEvenement extends State<AjoutEvenement> {
+  FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
+    focusNode.requestFocus();
 
     if (widget.evenement != null){
       controllerIntitule.text = widget.evenement!["titre"];
@@ -76,7 +79,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                   ),
                 ),
               ),
-              buildTextField(controllerIntitule, "Intitulé", mode: TextCapitalization.words),
+              buildTextField(controllerIntitule, "Intitulé", mode: TextCapitalization.words, focus: focusNode),
               buildTextField(controllerLieu, "Lieu"),
               buildTextField(controllerDescription, "Description", maxLines: 3),
               _buildDatePickerFieldEvenement(controllerDateDebut, controllerDateFin, "Debut", true),
