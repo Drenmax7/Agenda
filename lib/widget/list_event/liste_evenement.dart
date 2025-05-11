@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import '../../utils.dart';
 
 class ListeEvenement extends StatelessWidget {
-  const ListeEvenement({super.key, required this.evenements, required this.jour, required this.specialFunction});
+  const ListeEvenement({super.key, required this.evenements, required this.jour, required this.specialFunction, this.ongletRecherche = false});
 
+  final bool ongletRecherche;
   final List<dynamic> evenements;
   final String jour;
   final void Function(VoidCallback) specialFunction;
@@ -21,13 +22,13 @@ class ListeEvenement extends StatelessWidget {
       }
       
       colonneEvenement.add(
-        RecapitulatifEvenement(evenement: evenements[i], jour : jour, specialFunction: specialFunction,)
+        RecapitulatifEvenement(evenement: evenements[i], jour : jour, specialFunction: specialFunction, ongletRecherche: ongletRecherche,)
       );
     }
 
     if (evenements.isEmpty){
       colonneEvenement.add(
-          RecapitulatifEvenement(evenement: {"type": TypeEvenement.aucun}, jour : jour, specialFunction: specialFunction,)
+          RecapitulatifEvenement(evenement: {"type": TypeEvenement.aucun}, jour : jour, specialFunction: specialFunction, ongletRecherche: ongletRecherche,)
       );
     }
     

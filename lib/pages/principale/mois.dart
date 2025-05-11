@@ -151,7 +151,7 @@ class StartButton extends StatefulWidget {
 }
 
 class StartButtonState extends State<StartButton> {
-  bool visible = true;
+  bool visible = false;
   DateTime timeout = DateTime.now();
 
   void setVisibility(bool visibility){

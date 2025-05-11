@@ -9,8 +9,9 @@ import '../../bdd/bdd.dart';
 import '../../widget/bouton_ajout.dart';
 
 class Evenement extends StatefulWidget {
-  const Evenement({super.key, this.cacheRecherche = false, this.filtreRecherche = ""});
+  const Evenement({super.key, this.cacheRecherche = false, this.filtreRecherche = "", this.ongletRecherche = false});
 
+  final bool ongletRecherche;
   final bool cacheRecherche;
   final String filtreRecherche;
 
@@ -222,7 +223,12 @@ class _Evenement extends State<Evenement> {
                 ),
               ),
             ),
-            ListeEvenement(evenements: listeEvenement[listeDates[index]]!, jour: listeDates[index], specialFunction: setState,),
+            ListeEvenement(
+              evenements: listeEvenement[listeDates[index]]!,
+              jour: listeDates[index],
+              specialFunction: setState,
+              ongletRecherche: widget.ongletRecherche,
+            ),
           ],
         ),
       );

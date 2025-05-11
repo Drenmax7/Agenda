@@ -11,8 +11,9 @@ import '../../widget/information/snackbar.dart';
 import '../../widget/form/text_field.dart';
 
 class AjoutAnniversaire extends StatefulWidget {
-  const AjoutAnniversaire({super.key, this.selectedDate, this.anniversaire, this.specialFunction});
+  const AjoutAnniversaire({super.key, this.selectedDate, this.anniversaire, this.specialFunction, this.ongletRecherche = false});
 
+  final bool ongletRecherche;
   final DateTime? selectedDate;
   final Map<String,dynamic>? anniversaire;
   final void Function(VoidCallback)? specialFunction;
@@ -27,7 +28,6 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
   @override
   void initState() {
     super.initState();
-    focusNode.requestFocus();
 
     if (widget.anniversaire != null){
       controllerNom.text = widget.anniversaire!["nom"];
@@ -42,6 +42,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
     }
 
     if (widget.selectedDate != null){
+      focusNode.requestFocus();
       //controllerNaissance.text = widget.selectedDate!.year.toString();
       controllerDate.text = dateFormatMois.format(widget.selectedDate!);
     }
@@ -70,10 +71,10 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
                   ),
                 ),
               ),
-              buildTextField(controllerNom, "Nom de la Personne", mode: TextCapitalization.words, focus: focusNode),
-              buildTextField(controllerDetail, "Detail", maxLines: 3),
+              buildTextField(controllerNom, "Nom de la Personne", mode: TextCapitalization.words, focus: focusNode, context: context),
+              buildTextField(controllerDetail, "Detail", maxLines: 3, context: context),
               _buildDatePickerFieldAnniversaire(controllerDate, controllerNaissance, "Date"),
-              buildTextField(controllerNaissance, "Année de Naissance"),
+              buildTextField(controllerNaissance, "Année de Naissance", context: context),
               if (widget.anniversaire != null) supprimerBouton(),
             ],
           ),
@@ -110,16 +111,15 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
           );
         }
         else {
-          widget.specialFunction!((){
-            ModificationBdd.modifierAnniversaire(
-              id:widget.anniversaire!["id"],
-              date:widget.anniversaire!["date"],
-              jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
-              nom: controllerNom.text,
-              details: controllerDetail.text,
-              naissance: naissance,
-            );
-          });
+          ModificationBdd.modifierAnniversaire(
+            id:widget.anniversaire!["id"],
+            date:widget.anniversaire!["date"],
+            jour: DateTime(0, int.parse(date[1]), int.parse(date[0])),
+            nom: controllerNom.text,
+            details: controllerDetail.text,
+            naissance: naissance,
+          );
+          if (!widget.ongletRecherche) widget.specialFunction!((){});
         }
 
         Navigator.pop(context);

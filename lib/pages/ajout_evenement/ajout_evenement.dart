@@ -10,8 +10,9 @@ import '../../widget/information/snackbar.dart';
 import '../../widget/form/text_field.dart';
 
 class AjoutEvenement extends StatefulWidget {
-  const AjoutEvenement({super.key, this.selectedDate, this.evenement, this.specialFunction});
+  const AjoutEvenement({super.key, this.selectedDate, this.evenement, this.specialFunction, this.ongletRecherche = false});
 
+  final bool ongletRecherche;
   final DateTime? selectedDate;
   final Map<String,dynamic>? evenement;
   final void Function(VoidCallback)? specialFunction;
@@ -26,7 +27,6 @@ class _AjoutEvenement extends State<AjoutEvenement> {
   @override
   void initState() {
     super.initState();
-    focusNode.requestFocus();
 
     if (widget.evenement != null){
       controllerIntitule.text = widget.evenement!["titre"];
@@ -43,6 +43,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     }
 
     if (widget.selectedDate != null){
+      focusNode.requestFocus();
       DateTime dateAffiche = DateTime(widget.selectedDate!.year,
           widget.selectedDate!.month, widget.selectedDate!.day,
           DateTime.now().hour, DateTime.now().minute
@@ -79,9 +80,9 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                   ),
                 ),
               ),
-              buildTextField(controllerIntitule, "Intitulé", mode: TextCapitalization.words, focus: focusNode),
-              buildTextField(controllerLieu, "Lieu"),
-              buildTextField(controllerDescription, "Description", maxLines: 3),
+              buildTextField(controllerIntitule, "Intitulé", mode: TextCapitalization.words, focus: focusNode, context: context),
+              buildTextField(controllerLieu, "Lieu", context: context),
+              buildTextField(controllerDescription, "Description", maxLines: 3, context: context),
               _buildDatePickerFieldEvenement(controllerDateDebut, controllerDateFin, "Debut", true),
               _buildDatePickerFieldEvenement(controllerDateFin, controllerDateDebut, "Fin", false),
               if (widget.evenement != null) supprimerBouton(),
@@ -125,18 +126,17 @@ class _AjoutEvenement extends State<AjoutEvenement> {
           );
         }
         else {
-          widget.specialFunction!((){
-            ModificationBdd.modifierEvenement(
-              id: widget.evenement!["id"],
-              jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
-              heureDebut: heureDebut,
-              jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
-              heureFin: heureFin,
-              lieu: controllerLieu.text,
-              titre: controllerIntitule.text,
-              description: controllerDescription.text,
-            );
-          });
+          ModificationBdd.modifierEvenement(
+            id: widget.evenement!["id"],
+            jourDebut: DateTime(int.parse(dateDebut[2]), int.parse(dateDebut[1]), int.parse(dateDebut[0])),
+            heureDebut: heureDebut,
+            jourFin: DateTime(int.parse(dateFin[2]), int.parse(dateFin[1]), int.parse(dateFin[0])),
+            heureFin: heureFin,
+            lieu: controllerLieu.text,
+            titre: controllerIntitule.text,
+            description: controllerDescription.text,
+          );
+          if (!widget.ongletRecherche) widget.specialFunction!((){});
         }
 
         Navigator.pop(context);
@@ -146,7 +146,10 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     );
   }
 
-  Widget _buildDatePickerFieldEvenement(TextEditingController dateController, TextEditingController otherController,  String label, bool controllerEstDebut) {
+  Widget _buildDatePickerFieldEvenement(TextEditingController dateController,
+      TextEditingController otherController,
+      String label, bool controllerEstDebut)
+  {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(

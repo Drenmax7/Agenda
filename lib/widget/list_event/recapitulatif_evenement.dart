@@ -7,8 +7,9 @@ import '../../bdd/bdd.dart';
 import '../../pages/ajout_evenement/ajout_fete.dart';
 
 class RecapitulatifEvenement extends StatelessWidget {
-  const RecapitulatifEvenement({super.key, required this.evenement, required this.jour, required this.specialFunction});
+  const RecapitulatifEvenement({super.key, required this.evenement, required this.jour, required this.specialFunction, this.ongletRecherche = false});
 
+  final bool ongletRecherche;
   final Map<String, dynamic> evenement;
   final String jour;
   final void Function(VoidCallback) specialFunction;
@@ -64,9 +65,9 @@ class RecapitulatifEvenement extends StatelessWidget {
   descriptifEvenement() {
     switch (evenement["type"]!){
       case TypeEvenement.evenement :
-        return AjoutEvenement(evenement: evenement, specialFunction: specialFunction,);
+        return AjoutEvenement(evenement: evenement, specialFunction: specialFunction, ongletRecherche: ongletRecherche,);
       case TypeEvenement.anniversaire :
-        return AjoutAnniversaire(anniversaire: evenement, specialFunction: specialFunction,);
+        return AjoutAnniversaire(anniversaire: evenement, specialFunction: specialFunction, ongletRecherche: ongletRecherche,);
       case TypeEvenement.fete :
         return AjoutFete(fete: evenement,);
     }
