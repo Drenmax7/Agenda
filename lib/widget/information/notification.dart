@@ -1,76 +1,82 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 import '../../bdd/bdd.dart';
 import '../../utils.dart';
 
 class NotificationManager {
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
-    await Permission.notification.request();
+    await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // This is just a basic example. For real apps, you must show some
+        // friendly dialog box before call the request method.
+        // This is very important to not harm the user experience
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    '@drawable/ic_notification';
 
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestExactAlarmsPermission();
-
-    WidgetsFlutterBinding.ensureInitialized();
-
-    tz.initializeTimeZones();
-
-    const AndroidInitializationSettings androidInitSettings =
-    AndroidInitializationSettings('@drawable/ic_notification');
-
-    final InitializationSettings initSettings = InitializationSettings(
-      android: androidInitSettings,
+    await AwesomeNotifications().initialize(
+      // set the icon to null if you want to use the default app icon
+      'resource://drawable/ic_notification',
+      [
+        NotificationChannel(
+          channelGroupKey: 'anniversaire_group',
+          channelKey: 'anniversaire',
+          channelName: 'Rappel anniversaire',
+          channelDescription: 'Notification channel for anniversary reminder',
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white,
+          enableLights: true
+        ),
+      ],
+      // Channel groups are only visual and are not required
+      channelGroups: [
+        NotificationChannelGroup(
+            channelGroupKey: 'anniversaire_group',
+            channelGroupName: 'Anniversaire group')
+      ],
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initSettings);
+    await AwesomeNotifications().setListeners(
+        onActionReceivedMethod:         NotificationController.onActionReceivedMethod,
+        onNotificationCreatedMethod:    NotificationController.onNotificationCreatedMethod,
+        onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
+    );
   }
 
   static send({required String titre, required String message,
-    required DateTime moment, int numNotifJour = 0, required int idNotification}) async
+    required DateTime jour, int numNotifJour = 0, required int idNotification}) async
   {
-    NotificationDetails details = NotificationDetails(
-      android: AndroidNotificationDetails(
-        'id',
-        'canal',
-        channelDescription: "Rappel d'anniversaire",
-        importance: Importance.max,
-        priority: Priority.high,
-        fullScreenIntent: false,
+    DateTime scheduleTime = DateTime(jour.year, jour.month, jour.day, 10);
+    scheduleTime = DateTime.now().add(Duration(seconds: 5));
+
+    NotificationCalendar notificationCalendar = NotificationCalendar.fromDate(date: scheduleTime);
+    notificationCalendar.allowWhileIdle = true;
+    notificationCalendar.preciseAlarm = true;
+
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: idNotification,
+        channelKey: 'anniversaire',
+        actionType: ActionType.Default,
+        title: titre,
+        body: message,
+        category: NotificationCategory.Reminder,
       ),
+      schedule: notificationCalendar,
     );
 
-    tz.TZDateTime scheduledDate = tz.TZDateTime.local(moment.year, moment.month, moment.day, 10);
-
-    scheduledDate = tz.TZDateTime.local(
-        DateTime.now().year, DateTime.now().month, DateTime.now().day,
-        DateTime.now().hour, DateTime.now().minute, DateTime.now().second+10);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      idNotification,
-      titre,
-      message,
-      scheduledDate,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exact,
-    );
     print(message);
-    //await flutterLocalNotificationsPlugin.show(id,titre,message,details,);
   }
 
   static int idNotification = 0;
   static sendAnniversary(){
-    flutterLocalNotificationsPlugin.cancelAll();
+    AwesomeNotifications().cancelNotificationsByChannelKey("anniversaire");
     idNotification = 0;
 
     DateTime iDate = DateTime.now().toUtc();
@@ -103,11 +109,38 @@ class NotificationManager {
           idNotification: idNotification,
           titre: titre,
           message: message,
-          moment: iDate,
+          jour: iDate,
           numNotifJour: j,
         );
         idNotification++;
       }
     }
+  }
+}
+
+class NotificationController {
+
+  /// Use this method to detect when a new notification or a schedule is created
+  @pragma("vm:entry-point")
+  static Future <void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
+    // Your code goes here
+  }
+
+  /// Use this method to detect every time that a new notification is displayed
+  @pragma("vm:entry-point")
+  static Future <void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+    // Your code goes here
+  }
+
+  /// Use this method to detect if the user dismissed a notification
+  @pragma("vm:entry-point")
+  static Future <void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
+    // Your code goes here
+  }
+
+  /// Use this method to detect when the user taps on a notification or action button
+  @pragma("vm:entry-point")
+  static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+    // Your code goes here
   }
 }

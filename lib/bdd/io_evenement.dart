@@ -127,6 +127,8 @@ class IOEvenement{
     BDD.evenement = dataAgenda["evenement"];
     BDD.agenda = dataAgenda["agenda"];
 
+    save();
+
     return true;
   }
 }
