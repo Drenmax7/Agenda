@@ -85,15 +85,7 @@ class _PageCalendrier extends State<PageCalendrier> {
                 child: Column(
                   children: [
                     texteJour(iJour, currentMonth),
-                    Container(
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: getCouleurPastilleJour(iJour),
-                              width: 3
-                          )
-                      ),
-                    ),
+                    getPastilleJour(iJour),
                     SizedBox(height: 5,)
                   ],
                 ),
@@ -102,6 +94,51 @@ class _PageCalendrier extends State<PageCalendrier> {
           );
         },
       ),
+    );
+  }
+
+  Row getPastilleJour(DateTime jour){
+    Widget pastille(Color couleur){
+      return Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: couleur,
+                width: 3
+            )
+        ),
+      );
+    }
+
+    List<Widget> listeWidget = [];
+    Map<String,List<dynamic>> mapEvenements = GetBdd.getEvenement(debut: jour, fin: jour);
+    if (mapEvenements.isEmpty){
+      listeWidget.add(pastille(Colors.transparent));
+    }
+    else{
+      List<dynamic> evenements = mapEvenements.values.first;
+      List<int> typeEvenement = List.generate(evenements.length, (index) {return evenements[index]["type"];});
+
+      double width = 5;
+      if (typeEvenement.contains(TypeEvenement.evenement)){
+        listeWidget.add(pastille(Colors.blue));
+        listeWidget.add(SizedBox(width: width,));
+      }
+      if (typeEvenement.contains(TypeEvenement.anniversaire)){
+        listeWidget.add(pastille(Colors.red));
+        listeWidget.add(SizedBox(width: width,));
+      }
+      if (typeEvenement.contains(TypeEvenement.fete)){
+        listeWidget.add(pastille(Colors.green));
+        listeWidget.add(SizedBox(width: width,));
+      }
+
+      listeWidget.removeLast();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: listeWidget,
     );
   }
 
