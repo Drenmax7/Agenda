@@ -72,7 +72,7 @@ class CalendrierState extends State<Calendrier> {
         physics: const ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           return PageCalendrier(
-            moisPage: DateTime(DateTime.now().year, DateTime.now().month+realIndex(index),1, ),
+            moisPage: DateTime.utc(DateTime.now().year, DateTime.now().month+realIndex(index),1, ),
             changeDate: (DateTime newDate) {
               DateTime now = DateTime.now();
               DateTime moisActuelle = DateTime(now.year, now.month + realIndex(currentPage), 1);
