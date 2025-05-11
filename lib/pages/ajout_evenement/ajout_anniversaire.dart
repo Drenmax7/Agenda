@@ -2,6 +2,7 @@ import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:agenda/bdd/modification_bdd.dart';
 import 'package:agenda/utils.dart';
 import 'package:agenda/widget/information/confirmation_box.dart';
+import 'package:agenda/widget/information/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -121,6 +122,7 @@ class _AjoutAnniversaire extends State<AjoutAnniversaire> {
           );
           if (!widget.ongletRecherche) widget.specialFunction!((){});
         }
+        NotificationManager.sendAnniversary();
 
         Navigator.pop(context);
       },

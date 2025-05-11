@@ -18,6 +18,10 @@ class NotificationManager {
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
+
     WidgetsFlutterBinding.ensureInitialized();
 
     tz.initializeTimeZones();
@@ -32,10 +36,9 @@ class NotificationManager {
     await flutterLocalNotificationsPlugin.initialize(initSettings);
   }
 
-  static send({required String titre, required String message, required DateTime moment, int numNotifJour = 0}) async {
-    DateFormat format = DateFormat('yyyyMMdd');
-    int id = int.parse("${format.format(moment)}$numNotifJour");
-
+  static send({required String titre, required String message,
+    required DateTime moment, int numNotifJour = 0, required int idNotification}) async
+  {
     NotificationDetails details = NotificationDetails(
       android: AndroidNotificationDetails(
         'id',
@@ -43,33 +46,34 @@ class NotificationManager {
         channelDescription: "Rappel d'anniversaire",
         importance: Importance.max,
         priority: Priority.high,
-        fullScreenIntent: true,
+        fullScreenIntent: false,
       ),
     );
 
-    //final tz.TZDateTime scheduledDate = tz.TZDateTime.local(moment.year, moment.month, moment.day, 10);
+    tz.TZDateTime scheduledDate = tz.TZDateTime.local(moment.year, moment.month, moment.day, 10);
 
-    DateTime now = DateTime.now();
-    tz.TZDateTime scheduledDate = tz.TZDateTime.local(
-        now.year, now.month, now.day, now.hour, now.minute +1, now.second);
-
-    print("messsage $message");
-    print(scheduledDate);
+    scheduledDate = tz.TZDateTime.local(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day,
+        DateTime.now().hour, DateTime.now().minute, DateTime.now().second+10);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
+      idNotification,
       titre,
       message,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+      scheduledDate,
       details,
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.exact,
     );
-
+    print(message);
     //await flutterLocalNotificationsPlugin.show(id,titre,message,details,);
   }
 
+  static int idNotification = 0;
   static sendAnniversary(){
-    DateTime iDate = DateTime.now();
+    flutterLocalNotificationsPlugin.cancelAll();
+    idNotification = 0;
+
+    DateTime iDate = DateTime.now().toUtc();
 
     for (int i = 0; i < 365; i++){
       iDate = iDate.add(Duration(days: 1));
@@ -92,12 +96,17 @@ class NotificationManager {
           message = "C'est l'anniversaire de ${anniv["nom"]} aujourd'hui !";
         }
 
+        //DateFormat format = DateFormat('yyyyMMdd');
+        //int id = int.parse("${format.format(moment)}$numNotifJour");
+
         send(
+          idNotification: idNotification,
           titre: titre,
           message: message,
           moment: iDate,
           numNotifJour: j,
         );
+        idNotification++;
       }
     }
   }
