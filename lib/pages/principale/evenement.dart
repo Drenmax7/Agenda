@@ -24,8 +24,8 @@ class _Evenement extends State<Evenement> {
   int indexToJumpTo = 0;
   bool scrollAtStart = true;
 
-  DateTime dateDebutListe = DateTime.now().subtract(Duration(days: 3650));
-  DateTime dateFinListe = DateTime.now().add(Duration(days: 3650));
+  DateTime dateDebutListe = DateTime.now().subtract(Duration(days: 365*3));
+  DateTime dateFinListe = DateTime.now().add(Duration(days: 365*3));
   late Map<String,List<dynamic>> listeEvenement;
   int filtreEvenement = TypeEvenement.tout;
 
