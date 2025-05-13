@@ -53,7 +53,7 @@ class NotificationManager {
     required DateTime jour, int numNotifJour = 0, required int idNotification}) async
   {
     DateTime scheduleTime = DateTime(jour.year, jour.month, jour.day, 10);
-    scheduleTime = DateTime.now().add(Duration(seconds: 5));
+    //scheduleTime = DateTime.now().add(Duration(seconds: 5));
 
     NotificationCalendar notificationCalendar = NotificationCalendar.fromDate(date: scheduleTime);
     notificationCalendar.allowWhileIdle = true;

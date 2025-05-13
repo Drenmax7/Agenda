@@ -46,7 +46,28 @@ class _Evenement extends State<Evenement> {
     return Scaffold(
       appBar: choixFiltre(),
       backgroundColor: Colors.grey[200],
-      body : creeListe(),
+      body : Stack(
+        children: [
+          creeListe(),
+          if (widget.ongletRecherche)
+            Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                border: Border.all(color: Colors.black),
+              ),
+              padding: EdgeInsets.all(12),
+              child : Text(
+                "${listeEvenement.keys.length} événements",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: Stack(
         children: [
           Positioned(
