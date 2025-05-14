@@ -2,5 +2,4 @@ vibration notification
 probleme icone notification en release
 changer le repertoire de com.exemple.agenda a com.duckmania.agenda
 
-le saut de evenement va un jour trop loin si il y a un evenement aujourd'hui
 utiliser une vrai bdd pour le stockage des events

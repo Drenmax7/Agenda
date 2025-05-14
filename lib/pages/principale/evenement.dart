@@ -37,7 +37,7 @@ class _Evenement extends State<Evenement> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
+      itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.3);
     });
   }
 
@@ -159,7 +159,7 @@ class _Evenement extends State<Evenement> {
                           );
 
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.5);
+                            itemScrollController.jumpTo(index: indexToJumpTo, alignment: 0.3);
                           });
                         });
                       },
@@ -197,8 +197,10 @@ class _Evenement extends State<Evenement> {
     List<String> listeDates = listeEvenement.keys.toList();
     int i = 0;
     if (listeDates.isNotEmpty) {
-      while (i < listeDates.length && dateFormatAnnee.parse(listeDates[i]).isBefore(DateTime.now())) {
+      DateTime iDate = dateFormatAnnee.parse(listeDates[i]);
+      while (i < listeDates.length && iDate.isBefore(DateTime.now()) && !areSameDay(DateTime.now(), iDate)) {
         i++;
+        iDate = dateFormatAnnee.parse(listeDates[i]);
       }
     }
     indexToJumpTo = i+1;
@@ -338,7 +340,7 @@ class _StartButton extends State<StartButton> {
         heroTag: "btn1",
         onPressed: (){
           setState(() {
-            widget.itemScrollController.scrollTo(index: widget.indexToJumpTo, alignment: 0.5, duration: Duration(milliseconds: 500));
+            widget.itemScrollController.scrollTo(index: widget.indexToJumpTo, alignment: 0.3, duration: Duration(milliseconds: 500));
           });
         },
         tooltip: 'Jour actuelle',
