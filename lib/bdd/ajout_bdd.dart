@@ -107,7 +107,7 @@ class AjoutBDD{
 
     List<String> typeEvenement = ["Film","Soiree jeu","BBQ", "Heure tranquille", "Revision"];
 
-    for (int i = 0; i < 100; i++){
+    for (int i = 0; i < 1000; i++){
       String titre = typeEvenement[Random().nextInt(typeEvenement.length)];
 
       int nbParticipant = Random().nextInt(anniv.length);
@@ -128,4 +128,5 @@ class AjoutBDD{
       );
     }
   }
+
 }

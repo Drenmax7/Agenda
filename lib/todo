@@ -2,4 +2,5 @@ vibration notification
 probleme icone notification en release
 changer le repertoire de com.exemple.agenda a com.duckmania.agenda
 
-ajout indicateur sur le calendrier de l'annee pour voir les jours contenant des evenements
+le saut de evenement va un jour trop loin si il y a un evenement aujourd'hui
+utiliser une vrai bdd pour le stockage des events

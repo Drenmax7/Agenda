@@ -1,5 +1,7 @@
+import 'package:agenda/bdd/bdd.dart';
 import 'package:flutter/material.dart';
 
+import '../../../bdd/get_bdd.dart';
 import '../../../utils.dart';
 
 class PageCalendrierAnnee extends StatefulWidget {
@@ -83,14 +85,40 @@ class _PageCalendrierAnneeState extends State<PageCalendrierAnnee> {
       rows.add(TableRow(
         children: List<Widget>.generate(DateTime.daysPerWeek, (index) {
           String jour = iDate.month == mois.month ? iDate.day.toString() : "";
-          Color color = areSameDay(DateTime.now(), iDate) ? Colors.blue : Colors.black;
+          Color colorBorder = areSameDay(DateTime.now(), iDate) ? Colors.blue : Colors.transparent;
+
+          Color fontColor = Colors.black;
+          Map<String,List<dynamic>> mapEvenements = GetBdd.getEvenement(debut: iDate, fin: iDate);
+          if (mapEvenements.isNotEmpty){
+            List<dynamic> evenements = mapEvenements.values.first;
+            List<int> typeEvenement = List.generate(evenements.length, (index) {return evenements[index]["type"];});
+
+            if (typeEvenement.contains(TypeEvenement.evenement)){
+              fontColor = Colors.blue;
+            }
+
+            if (typeEvenement.contains(TypeEvenement.fete)){
+              fontColor = Colors.green;
+            }
+
+            if (typeEvenement.contains(TypeEvenement.anniversaire)){
+              fontColor = Colors.red;
+            }
+          }
+
           iDate = iDate.add(Duration(days: 1));
-          return Center(
-            child: Text(
-              jour,
-              style: TextStyle(
-                color: color,
-                fontSize: 11,
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: colorBorder),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                jour,
+                style: TextStyle(
+                  color: fontColor,
+                  fontSize: 10.5,
+                ),
               ),
             ),
           );
