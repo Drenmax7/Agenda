@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import '../../../pages/principale/annee.dart';
 
 class CalendrierAnnee extends StatefulWidget {
-  const CalendrierAnnee({super.key, required this.setAffichage, required this.startButtonKey, required this.cliqueMois});
+  const CalendrierAnnee({super.key, required this.setAffichage, required this.startButtonKey, required this.cliqueMois, this.selectedYear});
 
   final void Function(Affichage) setAffichage;
   final GlobalKey<StartButtonState> startButtonKey;
   final void Function(DateTime) cliqueMois;
+  final int? selectedYear;
 
   @override
   State<CalendrierAnnee> createState() => CalendrierAnneeState();
@@ -36,7 +37,12 @@ class CalendrierAnneeState extends State<CalendrierAnnee> {
   void initState() {
     super.initState();
 
-    currentPage = realIndex(0, reverse: true);
+    int index = 0;
+    if (widget.selectedYear != null){
+      index = widget.selectedYear! - DateTime.now().year;
+    }
+
+    currentPage = realIndex(index, reverse: true);
     pageController = PageController(initialPage: currentPage);
   }
 

@@ -1,4 +1,3 @@
-import 'package:agenda/bdd/ajout_bdd.dart';
 import 'package:agenda/widget/calendrier/annee/calendrier_annee.dart';
 import 'package:agenda/widget/calendrier/liste_annee/liste_annee.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +23,8 @@ class _Annee extends State<Annee> {
   GlobalKey<CalendrierAnneeState> calendrierKey = GlobalKey();
   GlobalKey<ListeAnneeState> listeAnneeKey = GlobalKey();
   GlobalKey<StartButtonState> startButtonKey = GlobalKey();
+
+  int? selectedYear;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +81,12 @@ class _Annee extends State<Annee> {
           key: listeAnneeKey,
           setAffichage: setAffichage,
           startButtonKey: startButtonKey,
+          cliqueAnnee: (annee) {
+            setState(() {
+              selectedYear = annee;
+              affichage = Affichage.annee;
+            });
+          },
         );
       case Affichage.annee:
         return CalendrierAnnee(
@@ -87,6 +94,7 @@ class _Annee extends State<Annee> {
           setAffichage: setAffichage,
           startButtonKey: startButtonKey,
           cliqueMois: widget.cliqueMois,
+          selectedYear: selectedYear,
         );
     }
   }

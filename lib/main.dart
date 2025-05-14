@@ -5,7 +5,6 @@ import 'package:agenda/widget/information/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'bdd/ajout_bdd.dart';
 import 'bdd/io_evenement.dart';
 
 main() async {

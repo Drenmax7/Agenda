@@ -1,24 +1,28 @@
+import 'package:agenda/widget/calendrier/liste_annee/page_liste_annee.dart';
 import 'package:flutter/material.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../pages/principale/annee.dart';
 
 class ListeAnnee extends StatefulWidget {
-  const ListeAnnee({super.key, required this.setAffichage, required this.startButtonKey,});
+  const ListeAnnee({super.key, required this.setAffichage, required this.startButtonKey, required this.cliqueAnnee,});
 
   final void Function(Affichage) setAffichage;
   final GlobalKey<StartButtonState> startButtonKey;
+  final void Function(int) cliqueAnnee;
 
   @override
   State<ListeAnnee> createState() => ListeAnneeState();
 }
 
 class ListeAnneeState extends State<ListeAnnee> {
-  ItemScrollController itemScrollController = ItemScrollController();
-  ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  late PageController pageController;
+  late int currentPage;
+
+  int nbRow = 7;
+  int nbColumn = 3;
 
   void jumpToYear(int i) {
-
+    pageController.animateToPage(realIndex(0, reverse: true), duration: Duration(milliseconds: 500), curve: Curves.linear);
   }
 
   int realIndex(int controllerIndex, {bool reverse = false}){
@@ -35,6 +39,8 @@ class ListeAnneeState extends State<ListeAnnee> {
   void initState() {
     super.initState();
 
+    currentPage = realIndex(0, reverse: true);
+    pageController = PageController(initialPage: currentPage);
   }
 
   @override
@@ -43,13 +49,24 @@ class ListeAnneeState extends State<ListeAnnee> {
       padding: EdgeInsets.all(12),
       child: Column(
         children: [
-          anneeText(),
+          nomPeriode(),
+          pageViewer(),
         ],
       ),
     );
   }
 
-  Widget anneeText(){
+  int calculDebutPeriode(int page){
+    int decalage = (nbRow/2).toInt() * nbColumn + (nbColumn/2).toInt();
+    int index = realIndex(page);
+    decalage -= nbRow * nbColumn * index;
+
+    return DateTime.now().year - decalage;
+  }
+
+  Widget nomPeriode(){
+    int debutPeriode = calculDebutPeriode(currentPage);
+
     return GestureDetector(
       onTap: () {
         widget.setAffichage(Affichage.annee);
@@ -58,13 +75,42 @@ class ListeAnneeState extends State<ListeAnnee> {
         color: Colors.transparent,
         alignment: Alignment.center,
         child: Text(
-          "Liste Années",
+          "$debutPeriode-${debutPeriode+nbRow*nbColumn-1}",
           style: TextStyle(
             color: Colors.black,
             fontSize: 36,
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget pageViewer(){
+    return Expanded(
+      child: PageView.builder(
+        scrollDirection: Axis.vertical,
+        controller: pageController,
+        physics: const ClampingScrollPhysics(),
+        onPageChanged: (int index) {
+          setState(() {
+            currentPage = index;
+            if (realIndex(index) != 0) {
+              widget.startButtonKey.currentState?.setVisibility(true);
+            }
+            else {
+              widget.startButtonKey.currentState?.setVisibility(false);
+            }
+          });
+        },
+        itemBuilder: (context, index) {
+          return PageListeAnnee(
+            cliqueAnnee: widget.cliqueAnnee,
+            nbRow: nbRow,
+            nbColumn: nbColumn,
+            debutPeriode: calculDebutPeriode(index),
+          );
+        },
       ),
     );
   }

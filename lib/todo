@@ -1,5 +1,5 @@
 vibration notification
 probleme icone notification en release
-changer le repertoire de com.exemple.agenda a com.duckmania.agenda
 
 utiliser une vrai bdd pour le stockage des events
+eventuellement optimiser des fonctions, notemment lorsque tous ce qu'a besoin de savoir une fonction est si il existe un event
