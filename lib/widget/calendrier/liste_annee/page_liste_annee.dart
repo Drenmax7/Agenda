@@ -33,23 +33,12 @@ class _PageListeAnneeState extends State<PageListeAnnee> {
 
   bool isThereEvent(int annee){
     Map<String, List<dynamic>> events = GetBdd.getEvenement(
-        debut: DateTime(annee, DateTime.january, 1),
-        fin: DateTime(annee, DateTime.december, 31)
+      debut: DateTime(annee, DateTime.january, 1),
+      fin: DateTime(annee, DateTime.december, 31),
+      filtre: TypeEvenement.evenement,
     );
 
-    if (events.isEmpty){
-      return false;
-    }
-
-    for (String key in events.keys){
-      for (Map<String, dynamic> event in events[key]!){
-        if (event["type"] == TypeEvenement.evenement){
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return events.isNotEmpty;
   }
 
   Widget caseAnnee(int annee){
