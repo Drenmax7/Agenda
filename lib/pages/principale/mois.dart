@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../bdd/get_bdd.dart';
 import '../../utils.dart';
 import '../../widget/bouton_ajout.dart';
-import '../../widget/calendrier/calendrier.dart';
+import '../../widget/calendrier/mois/calendrier.dart';
 import '../../widget/list_event/liste_evenement.dart';
 
 class Mois extends StatefulWidget {
-  const Mois({super.key});
+  const Mois({super.key, this.selectedMonth});
+
+  final DateTime? selectedMonth;
 
   @override
   State<Mois> createState() => _Mois();
@@ -30,6 +32,7 @@ class _Mois extends State<Mois> {
               key: calendrierKey,
               startButtonKey : startButtonKey,
               selectedDate: selectedDate,
+              selectedMonth: widget.selectedMonth,
               changeDate: (DateTime newDate){
                 setState(() {
                   selectedDate = DateTime(newDate.year, newDate.month, newDate.day);

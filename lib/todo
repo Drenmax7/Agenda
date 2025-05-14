@@ -1,4 +1,5 @@
 vibration notification
 probleme icone notification en release
 changer le repertoire de com.exemple.agenda a com.duckmania.agenda
-barre de recherche affiché nombre de correspondance
+
+ajout indicateur sur le calendrier de l'annee pour voir les jours contenant des evenements

@@ -1,15 +1,16 @@
 import 'package:agenda/utils.dart';
-import 'package:agenda/widget/calendrier/page_calendrier.dart';
+import 'package:agenda/widget/calendrier/mois/page_calendrier.dart';
 import 'package:flutter/material.dart';
 
-import '../../pages/principale/mois.dart';
+import '../../../pages/principale/mois.dart';
 
 class Calendrier extends StatefulWidget {
-  const Calendrier({super.key, required this.changeDate, required this.selectedDate, required this.startButtonKey});
+  const Calendrier({super.key, required this.changeDate, required this.selectedDate, required this.startButtonKey, this.selectedMonth});
 
   final Function(DateTime newDay) changeDate;
   final DateTime selectedDate;
   final GlobalKey<StartButtonState> startButtonKey;
+  final DateTime? selectedMonth;
 
   @override
   State<Calendrier> createState() => CalendrierState();
@@ -27,14 +28,49 @@ class CalendrierState extends State<Calendrier> {
     else {
       return controllerIndex - ecart;
     }
-
   }
   
   @override
   void initState() {
     super.initState();
-    
-    currentPage = realIndex(0, reverse: true);
+
+    int initialPage(){
+      if (widget.selectedMonth == null){
+        return 0;
+      }
+
+      DateTime now = DateTime.now();
+      if (now.year == widget.selectedMonth!.year && now.month == widget.selectedMonth!.month){
+        return 0;
+      }
+
+      if (widget.selectedMonth!.isBefore(now)){
+        int compte = 0;
+        DateTime iDate = widget.selectedMonth!;
+        while (!(now.year == iDate.year && now.month == iDate.month)){
+          compte++;
+          iDate = DateTime(iDate.year, iDate.month+1);
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.startButtonKey.currentState!.setVisibility(true);
+        });
+        return -compte;
+      }
+      else{
+        int compte = 0;
+        DateTime iDate = widget.selectedMonth!;
+        while (!(now.year == iDate.year && now.month == iDate.month)){
+          compte++;
+          iDate = DateTime(iDate.year, iDate.month-1);
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.startButtonKey.currentState!.setVisibility(true);
+        });
+        return compte;
+      }
+    }
+
+    currentPage = realIndex(initialPage(), reverse: true);
     pageController = PageController(initialPage: currentPage);
   }
 

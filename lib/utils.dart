@@ -2,13 +2,14 @@ import 'package:intl/intl.dart';
 
 DateFormat dateFormatAnnee = DateFormat('dd/MM/yyyy'); // 30/08/2003
 DateFormat dateFormatAnneeMoisTexte = DateFormat('MMMM yyyy', 'fr_FR'); // Aout 2003
+DateFormat dateFormatMoisTexte = DateFormat('MMMM', 'fr_FR'); // Aout
 DateFormat dateFormatAnneeHeure = DateFormat('dd/MM/yyyy HH:mm'); // 30/08/2003 15:47
 DateFormat dateFormatJourMoisABR = DateFormat('E d MMM', 'fr'); // Sam. 30 Aout.
 DateFormat dateFormatMois = DateFormat('dd/MM'); // 30/08
 DateFormat heureFormat = DateFormat.Hm(); // 15:47
 DateFormat formatageDateLongNoYear = DateFormat('EEEE d MMMM', 'fr_FR'); // Samedi 30 Aout
 DateFormat formatageDateLongYear = DateFormat('EEEE d MMMM yyyy', 'fr_FR'); // Samedi 30 Aout 2003
-DateFormat dateFormatJourSemaine = DateFormat("E", "fr");
+DateFormat dateFormatJourSemaine = DateFormat("E", "fr"); // Sam.
 
 String convertDateCourtToLong({String? formatCourt, DateTime? datetime}){
   DateTime date;
@@ -80,7 +81,13 @@ bool matchFilter({required String filtre, required Map<String,dynamic> evenement
 }
 
 String jourSemaine(index){
-  DateTime jourSemaine = DateTime(2025,DateTime.may,5);
+  DateTime jourSemaine = DateTime(2025,DateTime.may,5); //un lundi lambda
   String jour = dateFormatJourSemaine.format(jourSemaine.add(Duration(days: index)));
   return jour[0].toUpperCase() + jour.substring(1);
+}
+
+String moisDeAnnee(index){
+  DateTime debutMois = DateTime(2025, index, 1);
+  String mois = dateFormatMoisTexte.format(debutMois);
+  return mois[0].toUpperCase() + mois.substring(1);
 }

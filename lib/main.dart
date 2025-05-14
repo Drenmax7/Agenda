@@ -39,6 +39,7 @@ class _Agenda extends State<Agenda> {
 
   int pageActuelle = 1;
   bool dataLoaded = false;
+  DateTime? selectedMonth;
 
   @override
   void initState() {
@@ -75,8 +76,14 @@ class _Agenda extends State<Agenda> {
       controller: controller,
       physics: NeverScrollableScrollPhysics(),
       children: [
-        Annee(),
-        Mois(),
+        Annee(cliqueMois: (mois) {
+          setState(() {
+            pageActuelle = 1;
+            controller.jumpToPage(pageActuelle);
+            selectedMonth = mois;
+          });
+        }),
+        Mois(selectedMonth:selectedMonth),
         Evenement(),
       ],
     );
