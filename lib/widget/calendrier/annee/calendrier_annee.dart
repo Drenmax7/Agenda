@@ -97,7 +97,7 @@ class CalendrierAnneeState extends State<CalendrierAnnee> {
         physics: const ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           return PageCalendrierAnnee(
-            annee: DateTime(DateTime.now().year + realIndex(index)).toUtc(),
+            annee: DateTime.utc(DateTime.now().year + realIndex(index)),
             cliqueMois: widget.cliqueMois,
           );
         },
@@ -106,7 +106,7 @@ class CalendrierAnneeState extends State<CalendrierAnnee> {
   }
 
   String getAnnee(int numeroPage){
-    DateTime debutAnnee = DateTime(DateTime.now().year + realIndex(numeroPage));
+    DateTime debutAnnee = DateTime(DateTime.now().toUtc().year + realIndex(numeroPage));
     String annee = debutAnnee.year.toString();
     return annee;
   }

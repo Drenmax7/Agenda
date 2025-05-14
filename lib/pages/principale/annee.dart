@@ -2,8 +2,6 @@ import 'package:agenda/widget/calendrier/annee/calendrier_annee.dart';
 import 'package:agenda/widget/calendrier/liste_annee/liste_annee.dart';
 import 'package:flutter/material.dart';
 
-import '../../widget/bouton_ajout.dart';
-
 class Annee extends StatefulWidget {
   const Annee({super.key, required this.cliqueMois});
 
@@ -41,15 +39,6 @@ class _Annee extends State<Annee> {
       children: [
         Positioned(
           bottom: 10,
-          right: 10,
-          child: boutonAjout(context, null, (){
-            setState(() {
-
-            });
-          }),
-        ),
-        Positioned(
-          bottom: 80,
           right: 10,
           child: switch (affichage){
             Affichage.listeAnnee => StartButton(
