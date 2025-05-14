@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
@@ -70,8 +68,6 @@ class NotificationManager {
       ),
       schedule: notificationCalendar,
     );
-
-    print(message);
   }
 
   static int idNotification = 0;
