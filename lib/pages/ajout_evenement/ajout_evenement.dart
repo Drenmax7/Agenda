@@ -52,7 +52,6 @@ class _AjoutEvenement extends State<AjoutEvenement> {
         dateAffiche = dateAffiche.subtract(Duration(minutes: 1));
       }
       controllerDateDebut.text = dateFormatAnneeHeure.format(dateAffiche);
-      controllerDateFin.text = dateFormatAnneeHeure.format(dateAffiche);
     }
   }
 
@@ -178,7 +177,10 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                     dateController.text = "$day/$month/$year $hour:$minute";
 
                     if (otherController.text.isEmpty){
-                      otherController.text = dateController.text;
+                      DateTime date = dateFormatAnneeHeure.parse(dateController.text).toUtc();
+                      date = date.add(Duration(hours: controllerEstDebut ? 1 : -1));
+                      
+                      otherController.text = dateFormatAnneeHeure.format(date);
                       return;
                     }
 
