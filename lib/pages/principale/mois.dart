@@ -7,9 +7,10 @@ import '../../widget/calendrier/mois/calendrier.dart';
 import '../../widget/list_event/liste_evenement.dart';
 
 class Mois extends StatefulWidget {
-  const Mois({super.key, this.selectedMonth});
+  const Mois({super.key, this.selectedMonth, required this.cliqueTexte});
 
   final DateTime? selectedMonth;
+  final void Function(int) cliqueTexte;
 
   @override
   State<Mois> createState() => _Mois();
@@ -39,6 +40,7 @@ class _Mois extends State<Mois> {
                   startButtonKey.currentState?.setVisibility(!areSameDay(selectedDate, DateTime.now()));
                 });
               },
+              cliqueTexte: widget.cliqueTexte,
             ),
           ),
           Padding(

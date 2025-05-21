@@ -3,9 +3,10 @@ import 'package:agenda/widget/calendrier/liste_annee/liste_annee.dart';
 import 'package:flutter/material.dart';
 
 class Annee extends StatefulWidget {
-  const Annee({super.key, required this.cliqueMois});
+  const Annee({super.key, required this.cliqueMois, this.selectedYear});
 
   final void Function(DateTime) cliqueMois;
+  final int? selectedYear;
 
   @override
   State<Annee> createState() => _Annee();
@@ -23,6 +24,13 @@ class _Annee extends State<Annee> {
   GlobalKey<StartButtonState> startButtonKey = GlobalKey();
 
   int? selectedYear;
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedYear = widget.selectedYear;
+  }
 
   @override
   Widget build(BuildContext context) {

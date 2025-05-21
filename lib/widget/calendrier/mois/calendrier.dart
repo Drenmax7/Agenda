@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import '../../../pages/principale/mois.dart';
 
 class Calendrier extends StatefulWidget {
-  const Calendrier({super.key, required this.changeDate, required this.selectedDate, required this.startButtonKey, this.selectedMonth});
+  const Calendrier({super.key, required this.changeDate, required this.selectedDate,
+    required this.startButtonKey, this.selectedMonth, required this.cliqueTexte});
 
   final Function(DateTime newDay) changeDate;
   final DateTime selectedDate;
   final GlobalKey<StartButtonState> startButtonKey;
   final DateTime? selectedMonth;
+  final void Function(int) cliqueTexte;
 
   @override
   State<Calendrier> createState() => CalendrierState();
@@ -158,12 +160,19 @@ class CalendrierState extends State<Calendrier> {
   }
 
   Widget monthText(){
-    return Text(
-      getMonth(currentPage),
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: 36,
-        fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        widget.cliqueTexte(
+            DateTime(DateTime.now().year, DateTime.now().month+realIndex(currentPage),1).year,
+        );
+      },
+      child: Text(
+        getMonth(currentPage),
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 36,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
