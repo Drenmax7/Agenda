@@ -198,7 +198,7 @@ class _Evenement extends State<Evenement> {
     int i = 0;
     if (listeDates.isNotEmpty) {
       DateTime iDate = dateFormatAnnee.parse(listeDates[i]);
-      while (i < listeDates.length && iDate.isBefore(DateTime.now()) && !areSameDay(DateTime.now(), iDate)) {
+      while (i < listeDates.length-1 && iDate.isBefore(DateTime.now()) && !areSameDay(DateTime.now(), iDate)) {
         i++;
         iDate = dateFormatAnnee.parse(listeDates[i]);
       }
