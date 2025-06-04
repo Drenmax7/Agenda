@@ -96,13 +96,21 @@ class _AjoutEvenement extends State<AjoutEvenement> {
     return FloatingActionButton(
       onPressed: () {
         if (controllerDateDebut.text.isEmpty) {
-          showSnackbar(context, "Veuillez indiquer une date de debut");
-          return;
+          if (controllerDateFin.text.isEmpty){
+            showSnackbar(context, "Veuillez indiquer une date de debut");
+            return;
+          }
+          controllerDateDebut.text = controllerDateFin.text;
         }
+
         if (controllerDateFin.text.isEmpty) {
-          showSnackbar(context, "Veuillez indiquer une date de fin");
-          return;
+          if (controllerDateDebut.text.isEmpty) {
+            showSnackbar(context, "Veuillez indiquer une date de fin");
+            return;
+          }
+          controllerDateFin.text = controllerDateDebut.text;
         }
+
         if (controllerIntitule.text.isEmpty) {
           showSnackbar(context, "Veuillez indiquer un nom d'événement");
           return;
@@ -177,7 +185,7 @@ class _AjoutEvenement extends State<AjoutEvenement> {
                     dateController.text = "$day/$month/$year $hour:$minute";
 
                     if (otherController.text.isEmpty){
-                      DateTime date = dateFormatAnneeHeure.parse(dateController.text).toUtc();
+                      DateTime date = dateFormatAnneeHeure.parse(dateController.text);
                       date = date.add(Duration(hours: controllerEstDebut ? 1 : -1));
                       
                       otherController.text = dateFormatAnneeHeure.format(date);
